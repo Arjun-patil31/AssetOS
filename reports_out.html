@@ -1,0 +1,2024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics — AssetOS Enterprise</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/pages.css">
+    <style>
+        body, .main-wrapper, .content-body {
+            background: #faf8f5 !important;
+        }
+
+        /* Top Horizontal Tab Navigation matching Images 2-5 */
+        .report-nav-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 1.25rem;
+            overflow-x: auto;
+            background: transparent;
+        }
+
+        .report-tab-btn {
+            padding: 0.65rem 1.25rem;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            white-space: nowrap;
+            border: none;
+            background: none;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.15s ease;
+        }
+
+        .report-tab-btn:hover {
+            color: #18181b;
+        }
+
+        .report-tab-btn.active {
+            color: #18181b;
+            border-bottom-color: #18181b;
+            font-weight: 700;
+        }
+
+        /* Card Container matching Images 2-5 */
+        .report-card-container {
+            background: #ffffff;
+            border: 1px solid #ebe7cf;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            margin-top: 0.5rem;
+        }
+
+        /* Filters Toolbar matching Images 2-5 */
+        .report-filters-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            background: #ffffff;
+        }
+
+        .filters-left-group {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+        }
+
+        .filters-right-group {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+        }
+
+        .cream-date-picker {
+            padding: 0.45rem 0.65rem;
+            font-size: 0.82rem;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            background: #fbf9ea;
+            color: #374151;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.15s;
+        }
+        .cream-date-picker:focus {
+            border-color: #f59e0b;
+        }
+
+        .cream-select-filter {
+            padding: 0.45rem 0.75rem;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            background: #fbf9ea;
+            color: #374151;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .cream-select-filter:focus {
+            border-color: #f59e0b;
+        }
+
+        .report-search-input-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #fbf9ea;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            padding: 0.45rem 0.8rem;
+            min-width: 220px;
+            transition: border-color 0.15s;
+        }
+        .report-search-input-box:focus-within {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+        }
+        .report-search-input-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.83rem;
+            color: #1f2937;
+            width: 100%;
+        }
+
+        .btn-report-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #ffffff;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-report-export:hover {
+            background: #fbf9ea;
+            border-color: #d6d0ae;
+            transform: translateY(-1px);
+        }
+
+        /* Black Table Header matching Images 2-5 */
+        .black-report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .black-report-table th {
+            background: #18181b;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.76rem;
+            letter-spacing: 0.04em;
+            padding: 0.85rem 1rem;
+            border: none;
+            white-space: nowrap;
+        }
+        .black-report-table td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #f1efe2;
+            color: #27272a;
+            vertical-align: middle;
+        }
+        .black-report-table tbody tr:hover td {
+            background: #faf8ed;
+        }
+
+        /* Footer & Real-Time Pagination Controls */
+        .report-table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.82rem;
+            color: #6b7280;
+            border-top: 1px solid #f1efe2;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .pagination-cluster {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-page-nav {
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #374151;
+            transition: all 0.12s;
+        }
+        .btn-page-nav:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .btn-page-nav.active {
+            background: #18181b;
+            color: #ffffff;
+            border-color: #18181b;
+        }
+        .btn-page-nav:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Empty State Illustration matching Image 2 */
+        .mailbox-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4.5rem 1.5rem;
+            text-align: center;
+            background: #faf9f2;
+            border: 1px dashed #ebe7cf;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        .mailbox-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .mailbox-hint-text {
+            color: #6b7280;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .tab-panel-section {
+            display: none;
+        }
+        .tab-panel-section.active {
+            display: block;
+        }
+
+        @media print {
+            aside, .top-header, .report-nav-tabs, .report-filters-bar, .report-table-footer, .breadcrumb, #menuToggleBtn {
+                display: none !important;
+            }
+            .tab-panel-section.active {
+                display: block !important;
+            }
+            .report-card-container {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
+            body, .main-wrapper, .content-body {
+                background: #ffffff !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">AssetOS</span>
+                    <span class="brand-tag">Enterprise Asset Suite</span>
+                </div>
+            </a>
+            <button id="sidebarCloseBtn" class="sidebar-close-btn" aria-label="Close Sidebar">&times;</button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                            <span>Dashboard</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item has-submenu">
+                    <a href="javascript:void(0)" class="nav-link" onclick="toggleSubmenu('assetSubmenu', this)">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                            <span>Asset</span>
+                        </div>
+                        <svg class="submenu-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <ul id="assetSubmenu" class="submenu-list">
+                        <li><a href="/assets" class="submenu-link">Asset Entry</a></li>
+                        <li><a href="/assignments" class="submenu-link">Asset Assignment</a></li>
+                        <li><a href="/asset-return" class="submenu-link">Asset Return</a></li>
+                        <li><a href="/asset-transfer" class="submenu-link">Asset Transfer</a></li>
+                        <li><a href="/maintenance" class="submenu-link">Asset Maintenance</a></li>
+                        <li><a href="/asset-disposal" class="submenu-link">Asset Disposal</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="/employees" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <span>Employee</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/vendors" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            <span>Vendor</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/expenses" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            <span>Expense</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link active">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            <span>Reports</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/settings" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <span>Settings</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">AssetOS v1.0 &bull; 2026</div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <header class="top-header">
+            <div class="header-left">
+                <button id="menuToggleBtn" class="menu-toggle-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+                <div style="display:flex; flex-direction:column;">
+                    <span style="font-size:1.15rem; font-weight:700; color:#18181b;">Reports</span>
+                    <span style="font-size:0.78rem; color:#71717a;">Generate and export reports</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="status-badge-chip">
+                    <span class="status-indicator-dot"></span>
+                    <span>Firebase Connected</span>
+                </div>
+
+                <div class="cream-search-box" style="min-width: 250px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Quick search assets, employee..." oninput="globalActiveReportSearch(this.value)">
+                </div>
+
+                <span class="current-date-display">Monday, 12 Oct 2026</span>
+
+                <div class="user-profile-menu">
+                    <button class="user-avatar-btn" onclick="document.getElementById('userDropdown').classList.toggle('show')">
+                        <span>AD</span>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown-menu">
+                        <a href="/settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/logout" class="dropdown-item logout">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-body" style="padding: 1.25rem 2rem;">
+            <!-- Top Horizontal Tabs (Matching Images 1, 2, 3, 4, 5) -->
+            <div class="report-nav-tabs" id="reportTabBar">
+                <button class="report-tab-btn active" type="button" onclick="switchReportTab('tab-asset', this)">Asset</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-employee', this)">Employee</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-depreciation', this)">Depreciation</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-assignment', this)">Assignment</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-return', this)">Return</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-transfer', this)">Transfer</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-maintenance', this)">Maintenance</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-vendor', this)">Vendor</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-disposal', this)">Disposal</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-expense', this)">Expense</button>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 1. TAB: ASSET REPORT                                           -->
+            <!-- ============================================================= -->
+            <div id="tab-asset" class="tab-panel-section active">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="assetStartDate" onchange="runReportFilter('asset')">
+                            <input type="date" class="cream-date-picker" id="assetEndDate" onchange="runReportFilter('asset')">
+                            <!-- Select Asset dropdown matching Image 3 -->
+                            <select class="cream-select-filter" id="assetItemFilter" onchange="runReportFilter('asset')">
+                                <option value="">Select Asset</option>
+                                <option value="AST0020">AST0020 - Dell PowerEdge T350 Server</option>
+                                <option value="AST0019">AST0019 - Epson EB-E01 XGA Projector</option>
+                                <option value="AST0018">AST0018 - Toyota Innova Crysta (Company Car)</option>
+                                <option value="AST0017">AST0017 - Sony WH-1000XM5 Headset</option>
+                                <option value="AST0016">AST0016 - Logitech MX Master 3S Mouse</option>
+                                <option value="AST0015">AST0015 - APC 3KVA Online UPS</option>
+                                <option value="AST0014">AST0014 - Fortinet FortiGate 60F Firewall</option>
+                                <option value="AST0013">AST0013 - Cisco Catalyst 24-Port Switch</option>
+                                <option value="AST0012">AST0012 - Apple iPhone 15 Pro</option>
+                                <option value="AST0011">AST0011 - Samsung Galaxy S24 Ultra</option>
+                                <option value="AST0010">AST0010 - Dell Latitude 5440 Laptop</option>
+                                <option value="AST0009">AST0009 - MacBook Pro 16&quot; M3 Max</option>
+                                <option value="AST0008">AST0008 - Lenovo ThinkPad T14s Gen 4</option>
+                                <option value="AST0007">AST0007 - HP EliteBook 840 G10</option>
+                                <option value="AST0006">AST0006 - Modular Workstation Desk</option>
+                                <option value="AST0005">AST0005 - Ergonomic Mesh Chair</option>
+                                <option value="AST0004">AST0004 - Conference Room Table 10-Seater</option>
+                                <option value="AST0003">AST0003 - HP LaserJet Pro M404dn</option>
+                                <option value="AST0002">AST0002 - Canon imageRUNNER ADVANCE</option>
+                                <option value="AST0001">AST0001 - Dell UltraSharp 27&quot; Monitor</option>
+                            </select>
+                            <select class="cream-select-filter" id="assetCatFilter" onchange="runReportFilter('asset')">
+                                <option value="">All Categories</option>
+                                <option>Laptop</option>
+                                <option>Desktop</option>
+                                <option>Mobile</option>
+                                <option>Networking</option>
+                                <option>Printer</option>
+                                <option>Peripheral</option>
+                                <option>Furniture</option>
+                                <option>Vehicle</option>
+                            </select>
+                            <select class="cream-select-filter" id="assetDeptFilter" onchange="runReportFilter('asset')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Warehouse</option>
+                            </select>
+                            <select class="cream-select-filter" id="assetStatusFilter" onchange="runReportFilter('asset')">
+                                <option value="">All Statuses</option>
+                                <option>Available</option>
+                                <option>Assigned</option>
+                                <option>Under Maintenance</option>
+                                <option>Retired</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="assetSearchInput" placeholder="Search report..." oninput="runReportFilter('asset')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('asset')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('asset')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('asset')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('asset')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-asset">
+                            <thead>
+                                <tr>
+                                    <th>NO.</th>
+                                    <th>ASSET TAG</th>
+                                    <th>NAME / MODEL</th>
+                                    <th>CATEGORY</th>
+                                    <th>BRAND</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>STATUS</th>
+                                    <th>CONDITION</th>
+                                    <th>PURCHASE COST</th>
+                                    <th>BOOK VALUE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-asset">
+                                <tr data-date="01 Dec 2024"
+                                    data-cat="Desktop"
+                                    data-dept="HR"
+                                    data-status="Under Maintenance">
+                                    <td class="row-num">1</td>
+                                    <td><strong>AST0020</strong></td>
+                                    <td>Dell PowerEdge T350 Server</td>
+                                    <td><span class="category-pill">Desktop</span></td>
+                                    <td>Dell</td>
+                                    <td>HR</td>
+                                    <td><strong>Under Maintenance</strong></td>
+                                    <td>New</td>
+                                    <td>₹2,10,000</td>
+                                    <td>₹1,39,349</td>
+                                </tr>
+                                <tr data-date="01 Nov 2024"
+                                    data-cat="Peripheral"
+                                    data-dept="Finance"
+                                    data-status="Assigned">
+                                    <td class="row-num">2</td>
+                                    <td><strong>AST0019</strong></td>
+                                    <td>Epson EB-E01 XGA Projector</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>Epson</td>
+                                    <td>Finance</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>Good</td>
+                                    <td>₹34,500</td>
+                                    <td>₹22,680</td>
+                                </tr>
+                                <tr data-date="15 May 2023"
+                                    data-cat="Vehicle"
+                                    data-dept="Operations"
+                                    data-status="Under Maintenance">
+                                    <td class="row-num">3</td>
+                                    <td><strong>AST0018</strong></td>
+                                    <td>Toyota Innova Crysta (Company Car)</td>
+                                    <td><span class="category-pill">Vehicle</span></td>
+                                    <td>Toyota</td>
+                                    <td>Operations</td>
+                                    <td><strong>Under Maintenance</strong></td>
+                                    <td>Fair</td>
+                                    <td>₹21,50,000</td>
+                                    <td>₹7,62,310</td>
+                                </tr>
+                                <tr data-date="01 Nov 2024"
+                                    data-cat="Peripheral"
+                                    data-dept="HR"
+                                    data-status="Assigned">
+                                    <td class="row-num">4</td>
+                                    <td><strong>AST0017</strong></td>
+                                    <td>Sony WH-1000XM5 Headset</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>Sony</td>
+                                    <td>HR</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>New</td>
+                                    <td>₹29,990</td>
+                                    <td>₹25,752</td>
+                                </tr>
+                                <tr data-date="15 Feb 2025"
+                                    data-cat="Peripheral"
+                                    data-dept="Operations"
+                                    data-status="Assigned">
+                                    <td class="row-num">5</td>
+                                    <td><strong>AST0016</strong></td>
+                                    <td>Logitech MX Master 3S Mouse</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>Logitech</td>
+                                    <td>Operations</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>Good</td>
+                                    <td>₹8,995</td>
+                                    <td>₹5,289</td>
+                                </tr>
+                                <tr data-date="10 Jun 2024"
+                                    data-cat="Networking"
+                                    data-dept="IT"
+                                    data-status="Available">
+                                    <td class="row-num">6</td>
+                                    <td><strong>AST0015</strong></td>
+                                    <td>APC 3KVA Online UPS</td>
+                                    <td><span class="category-pill">Networking</span></td>
+                                    <td>APC</td>
+                                    <td>IT</td>
+                                    <td><strong>Available</strong></td>
+                                    <td>Good</td>
+                                    <td>₹48,000</td>
+                                    <td>₹32,455</td>
+                                </tr>
+                                <tr data-date="01 Jul 2024"
+                                    data-cat="Networking"
+                                    data-dept="IT"
+                                    data-status="Assigned">
+                                    <td class="row-num">7</td>
+                                    <td><strong>AST0014</strong></td>
+                                    <td>Fortinet FortiGate 60F Firewall</td>
+                                    <td><span class="category-pill">Networking</span></td>
+                                    <td>Fortinet</td>
+                                    <td>IT</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>Good</td>
+                                    <td>₹89,000</td>
+                                    <td>₹51,921</td>
+                                </tr>
+                                <tr data-date="15 Aug 2024"
+                                    data-cat="Networking"
+                                    data-dept="IT"
+                                    data-status="Available">
+                                    <td class="row-num">8</td>
+                                    <td><strong>AST0013</strong></td>
+                                    <td>Cisco Catalyst 24-Port Switch</td>
+                                    <td><span class="category-pill">Networking</span></td>
+                                    <td>Cisco</td>
+                                    <td>IT</td>
+                                    <td><strong>Available</strong></td>
+                                    <td>Good</td>
+                                    <td>₹54,000</td>
+                                    <td>₹36,503</td>
+                                </tr>
+                                <tr data-date="20 Mar 2025"
+                                    data-cat="Mobile"
+                                    data-dept="IT"
+                                    data-status="Available">
+                                    <td class="row-num">9</td>
+                                    <td><strong>AST0012</strong></td>
+                                    <td>Apple iPhone 15 Pro</td>
+                                    <td><span class="category-pill">Mobile</span></td>
+                                    <td>Apple</td>
+                                    <td>IT</td>
+                                    <td><strong>Available</strong></td>
+                                    <td>New</td>
+                                    <td>₹1,34,900</td>
+                                    <td>₹1,34,900</td>
+                                </tr>
+                                <tr data-date="01 Apr 2025"
+                                    data-cat="Mobile"
+                                    data-dept="IT"
+                                    data-status="Available">
+                                    <td class="row-num">10</td>
+                                    <td><strong>AST0011</strong></td>
+                                    <td>Samsung Galaxy S24 Ultra</td>
+                                    <td><span class="category-pill">Mobile</span></td>
+                                    <td>Samsung</td>
+                                    <td>IT</td>
+                                    <td><strong>Available</strong></td>
+                                    <td>New</td>
+                                    <td>₹1,29,999</td>
+                                    <td>₹96,237</td>
+                                </tr>
+                                <tr data-date="10 Jan 2024"
+                                    data-cat="Laptop"
+                                    data-dept="IT"
+                                    data-status="Under Maintenance">
+                                    <td class="row-num">11</td>
+                                    <td><strong>AST0010</strong></td>
+                                    <td>Dell Latitude 5440 Laptop</td>
+                                    <td><span class="category-pill">Laptop</span></td>
+                                    <td>Dell</td>
+                                    <td>IT</td>
+                                    <td><strong>Under Maintenance</strong></td>
+                                    <td>Fair</td>
+                                    <td>₹85,000</td>
+                                    <td>₹58,000</td>
+                                </tr>
+                                <tr data-date="15 Jan 2024"
+                                    data-cat="Laptop"
+                                    data-dept="IT"
+                                    data-status="Assigned">
+                                    <td class="row-num">12</td>
+                                    <td><strong>AST0009</strong></td>
+                                    <td>MacBook Pro 16&quot; M3 Max</td>
+                                    <td><span class="category-pill">Laptop</span></td>
+                                    <td>Apple</td>
+                                    <td>IT</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>New</td>
+                                    <td>₹3,49,900</td>
+                                    <td>₹2,85,000</td>
+                                </tr>
+                                <tr data-date="01 Feb 2024"
+                                    data-cat="Laptop"
+                                    data-dept="Sales"
+                                    data-status="Assigned">
+                                    <td class="row-num">13</td>
+                                    <td><strong>AST0008</strong></td>
+                                    <td>Lenovo ThinkPad T14s Gen 4</td>
+                                    <td><span class="category-pill">Laptop</span></td>
+                                    <td>Lenovo</td>
+                                    <td>Sales</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>Good</td>
+                                    <td>₹1,15,000</td>
+                                    <td>₹82,000</td>
+                                </tr>
+                                <tr data-date="20 Feb 2024"
+                                    data-cat="Laptop"
+                                    data-dept="Inventory Pool"
+                                    data-status="Available">
+                                    <td class="row-num">14</td>
+                                    <td><strong>AST0007</strong></td>
+                                    <td>HP EliteBook 840 G10</td>
+                                    <td><span class="category-pill">Laptop</span></td>
+                                    <td>HP</td>
+                                    <td>Inventory Pool</td>
+                                    <td><strong>Available</strong></td>
+                                    <td>New</td>
+                                    <td>₹1,05,000</td>
+                                    <td>₹76,000</td>
+                                </tr>
+                                <tr data-date="05 Mar 2023"
+                                    data-cat="Furniture"
+                                    data-dept="Sales"
+                                    data-status="Under Maintenance">
+                                    <td class="row-num">15</td>
+                                    <td><strong>AST0006</strong></td>
+                                    <td>Modular Workstation Desk</td>
+                                    <td><span class="category-pill">Furniture</span></td>
+                                    <td>Steelcase</td>
+                                    <td>Sales</td>
+                                    <td><strong>Under Maintenance</strong></td>
+                                    <td>Good</td>
+                                    <td>₹38,000</td>
+                                    <td>₹26,000</td>
+                                </tr>
+                                <tr data-date="10 Mar 2023"
+                                    data-cat="Furniture"
+                                    data-dept="Sales"
+                                    data-status="Assigned">
+                                    <td class="row-num">16</td>
+                                    <td><strong>AST0005</strong></td>
+                                    <td>Ergonomic Mesh Chair</td>
+                                    <td><span class="category-pill">Furniture</span></td>
+                                    <td>Featherlite</td>
+                                    <td>Sales</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>Good</td>
+                                    <td>₹14,500</td>
+                                    <td>₹9,500</td>
+                                </tr>
+                                <tr data-date="12 Mar 2023"
+                                    data-cat="Furniture"
+                                    data-dept="HR"
+                                    data-status="Assigned">
+                                    <td class="row-num">17</td>
+                                    <td><strong>AST0004</strong></td>
+                                    <td>Conference Room Table 10-Seater</td>
+                                    <td><span class="category-pill">Furniture</span></td>
+                                    <td>Godrej Interio</td>
+                                    <td>HR</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>Good</td>
+                                    <td>₹65,000</td>
+                                    <td>₹48,000</td>
+                                </tr>
+                                <tr data-date="18 Apr 2023"
+                                    data-cat="Printer"
+                                    data-dept="HR"
+                                    data-status="Assigned">
+                                    <td class="row-num">18</td>
+                                    <td><strong>AST0003</strong></td>
+                                    <td>HP LaserJet Pro M404dn</td>
+                                    <td><span class="category-pill">Printer</span></td>
+                                    <td>HP</td>
+                                    <td>HR</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>Good</td>
+                                    <td>₹28,500</td>
+                                    <td>₹18,000</td>
+                                </tr>
+                                <tr data-date="22 Apr 2023"
+                                    data-cat="Printer"
+                                    data-dept="Operations"
+                                    data-status="Assigned">
+                                    <td class="row-num">19</td>
+                                    <td><strong>AST0002</strong></td>
+                                    <td>Canon imageRUNNER ADVANCE</td>
+                                    <td><span class="category-pill">Printer</span></td>
+                                    <td>Canon</td>
+                                    <td>Operations</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>Good</td>
+                                    <td>₹1,65,000</td>
+                                    <td>₹1,15,000</td>
+                                </tr>
+                                <tr data-date="05 May 2024"
+                                    data-cat="Desktop"
+                                    data-dept="IT"
+                                    data-status="Assigned">
+                                    <td class="row-num">20</td>
+                                    <td><strong>AST0001</strong></td>
+                                    <td>Dell UltraSharp 27&quot; Monitor</td>
+                                    <td><span class="category-pill">Desktop</span></td>
+                                    <td>Dell</td>
+                                    <td>IT</td>
+                                    <td><strong>Assigned</strong></td>
+                                    <td>Good</td>
+                                    <td>₹42,000</td>
+                                    <td>₹36,503</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-asset">
+                        <div>
+                            Total records: <strong id="total-asset">20</strong>
+                            &bull; Grand Total: <span style="font-weight:600; color:#059669;">₹37,46,384</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-asset">Showing 1-10 of 20 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('asset', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-asset"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 2. TAB: EMPLOYEE REPORT (Matching Image 2)                     -->
+            <!-- ============================================================= -->
+            <div id="tab-employee" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="employeeStartDate" onchange="runEmployeeReportFilter()">
+                            <input type="date" class="cream-date-picker" id="employeeEndDate" onchange="runEmployeeReportFilter()">
+                            <select class="cream-select-filter" id="employeeDeptFilter" onchange="runEmployeeReportFilter()">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Marketing</option>
+                                <option>Support</option>
+                            </select>
+                            <select class="cream-select-filter" id="employeeSelectDropdown" onchange="handleEmployeeSelectChange(this.value)">
+                                <option value="">All Employees</option>
+                                <option value="Tariqul Islam">EMP0020 — Tariqul Islam</option>
+                                <option value="Nigar Sultana">EMP0019 — Nigar Sultana</option>
+                                <option value="Anisur Rahman">EMP0018 — Anisur Rahman</option>
+                                <option value="Laila Hasan">EMP0017 — Laila Hasan</option>
+                                <option value="Farhan Chowdhury">EMP0016 — Farhan Chowdhury</option>
+                                <option value="Sumaiya Yasmin">EMP0015 — Sumaiya Yasmin</option>
+                                <option value="Arifur Rahman">EMP0014 — Arifur Rahman</option>
+                                <option value="Mitu Chowdhury">EMP0013 — Mitu Chowdhury</option>
+                                <option value="Jamil Hossain">EMP0012 — Jamil Hossain</option>
+                                <option value="Tania Sultana">EMP0011 — Tania Sultana</option>
+                                <option value="Sarah Jenkins">EMP0001 — Sarah Jenkins</option>
+                                <option value="Alex Rivera">EMP0003 — Alex Rivera</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="employeeSearchInput" placeholder="Search report..." oninput="runEmployeeReportFilter()">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('employee')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('employee')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('employee')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('employee')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <!-- Table (Live Display with real-time Employee / Dept / Date filtering) -->
+                    <div id="employeeTableWrapper" style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-employee">
+                            <thead>
+                                <tr>
+                                    <th>NO.</th>
+                                    <th>ASSET TAG</th>
+                                    <th>NAME / MODEL</th>
+                                    <th>CATEGORY</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>ASSIGNED TO</th>
+                                    <th>ASSIGNED DATE</th>
+                                    <th>RETURN DATE</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-employee">
+                                <tr data-employee="Rahim Ahmed"
+                                    data-dept="IT"
+                                    data-cat="Laptop"
+                                    data-date="10 Aug 2026">
+                                    <td class="row-num">1</td>
+                                    <td><strong>AST0009</strong></td>
+                                    <td>Apple MacBook Pro 16&quot;</td>
+                                    <td><span class="category-pill">Laptop</span></td>
+                                    <td>IT</td>
+                                    <td><strong>Rahim Ahmed</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Jamil Hossain"
+                                    data-dept="Operations"
+                                    data-cat="Laptop"
+                                    data-date="10 Aug 2026">
+                                    <td class="row-num">2</td>
+                                    <td><strong>AST0007</strong></td>
+                                    <td>HP EliteBook 840 G8</td>
+                                    <td><span class="category-pill">Laptop</span></td>
+                                    <td>Operations</td>
+                                    <td><strong>Jamil Hossain</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Karim Uddin"
+                                    data-dept="HR"
+                                    data-cat="Desktop"
+                                    data-date="10 Aug 2026">
+                                    <td class="row-num">3</td>
+                                    <td><strong>AST0020</strong></td>
+                                    <td>Dell PowerEdge T350 Server</td>
+                                    <td><span class="category-pill">Desktop</span></td>
+                                    <td>HR</td>
+                                    <td><strong>Karim Uddin</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Sadia Afrin"
+                                    data-dept="Marketing"
+                                    data-cat="Networking"
+                                    data-date="10 Aug 2026">
+                                    <td class="row-num">4</td>
+                                    <td><strong>AST0014</strong></td>
+                                    <td>Fortinet FortiGate 60F Firewall</td>
+                                    <td><span class="category-pill">Networking</span></td>
+                                    <td>Marketing</td>
+                                    <td><strong>Sadia Afrin</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Anisur Rahman"
+                                    data-dept="Operations"
+                                    data-cat="Peripheral"
+                                    data-date="10 Aug 2026">
+                                    <td class="row-num">5</td>
+                                    <td><strong>AST0016</strong></td>
+                                    <td>Logitech MX Master 3S Mouse, Cisco Catalyst 24-Port Switch</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>Operations</td>
+                                    <td><strong>Anisur Rahman</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Fatima Begum"
+                                    data-dept="Finance"
+                                    data-cat="Peripheral"
+                                    data-date="09 Aug 2026">
+                                    <td class="row-num">6</td>
+                                    <td><strong>AST0016</strong></td>
+                                    <td>Logitech MX Master 3S Mouse</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>Finance</td>
+                                    <td><strong>Fatima Begum</strong></td>
+                                    <td>09 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Karim Uddin"
+                                    data-dept="HR"
+                                    data-cat="Peripheral"
+                                    data-date="09 Aug 2026">
+                                    <td class="row-num">7</td>
+                                    <td><strong>AST0017</strong></td>
+                                    <td>Sony WH-1000XM5 Headset</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>HR</td>
+                                    <td><strong>Karim Uddin</strong></td>
+                                    <td>09 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Arifur Rahman"
+                                    data-dept="IT"
+                                    data-cat="Furniture"
+                                    data-date="09 Aug 2026">
+                                    <td class="row-num">8</td>
+                                    <td><strong>AST0005</strong></td>
+                                    <td>Ergonomic Mesh Chair</td>
+                                    <td><span class="category-pill">Furniture</span></td>
+                                    <td>IT</td>
+                                    <td><strong>Arifur Rahman</strong></td>
+                                    <td>09 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Jamil Hossain"
+                                    data-dept="Operations"
+                                    data-cat="Printer"
+                                    data-date="29 Aug 2026">
+                                    <td class="row-num">9</td>
+                                    <td><strong>AST0003</strong></td>
+                                    <td>HP LaserJet Pro M404dn</td>
+                                    <td><span class="category-pill">Printer</span></td>
+                                    <td>Operations</td>
+                                    <td><strong>Jamil Hossain</strong></td>
+                                    <td>29 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Abdul Alim"
+                                    data-dept="Operations"
+                                    data-cat="Laptop"
+                                    data-date="15 Aug 2026">
+                                    <td class="row-num">10</td>
+                                    <td><strong>AST0009</strong></td>
+                                    <td>Apple MacBook Pro 16&quot;</td>
+                                    <td><span class="category-pill">Laptop</span></td>
+                                    <td>Operations</td>
+                                    <td><strong>Abdul Alim</strong></td>
+                                    <td>15 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Priya Sharma"
+                                    data-dept="Sales"
+                                    data-cat="Laptop"
+                                    data-date="01 Aug 2026">
+                                    <td class="row-num">11</td>
+                                    <td><strong>AST0008</strong></td>
+                                    <td>Lenovo ThinkPad T14s Gen 4</td>
+                                    <td><span class="category-pill">Laptop</span></td>
+                                    <td>Sales</td>
+                                    <td><strong>Priya Sharma</strong></td>
+                                    <td>01 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-employee="Farhan Chowdhury"
+                                    data-dept="IT"
+                                    data-cat="Peripheral"
+                                    data-date="01 Aug 2026">
+                                    <td class="row-num">12</td>
+                                    <td><strong>AST0019</strong></td>
+                                    <td>Epson EB-E01 XGA Projector</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>IT</td>
+                                    <td><strong>Farhan Chowdhury</strong></td>
+                                    <td>01 Aug 2026</td>
+                                    <td>Permanent</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-employee">
+                        <div>Total records: <strong id="total-employee">0</strong> &bull; Grand Total: &mdash;</div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-employee">Showing 0-0 of 0 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('employee', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-employee"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 3. TAB: DEPRECIATION REPORT (Matching Image 3)                 -->
+            <!-- ============================================================= -->
+            <div id="tab-depreciation" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="depreciationStartDate" onchange="runReportFilter('depreciation')">
+                            <input type="date" class="cream-date-picker" id="depreciationEndDate" onchange="runReportFilter('depreciation')">
+                            <select class="cream-select-filter" id="depreciationCatFilter" onchange="runReportFilter('depreciation')">
+                                <option value="">All Categories</option>
+                                <option>Desktop</option>
+                                <option>Laptop</option>
+                                <option>Peripheral</option>
+                                <option>Vehicle</option>
+                                <option>Networking</option>
+                                <option>Mobile</option>
+                            </select>
+                            <select class="cream-select-filter" id="depreciationDeptFilter" onchange="runReportFilter('depreciation')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                            </select>
+                            <select class="cream-select-filter" id="depreciationMethodFilter" onchange="runReportFilter('depreciation')">
+                                <option value="">All Methods</option>
+                                <option>SLM</option>
+                                <option>WDV</option>
+                                <option>Not Applicable</option>
+                            </select>
+                            <select class="cream-select-filter" id="depreciationStatusFilter" onchange="runReportFilter('depreciation')">
+                                <option value="">All Statuses</option>
+                                <option>Available</option>
+                                <option>Assigned</option>
+                                <option>Under Maintenance</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="depreciationSearchInput" placeholder="Search report..." oninput="runReportFilter('depreciation')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('depreciation')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('depreciation')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('depreciation')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('depreciation')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-depreciation">
+                            <thead>
+                                <tr>
+                                    <th>ASSET ID</th>
+                                    <th>ASSET NAME</th>
+                                    <th>CATEGORY</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>PURCHASE DATE</th>
+                                    <th>PURCHASE COST</th>
+                                    <th>METHOD</th>
+                                    <th>USEFUL LIFE / RATE</th>
+                                    <th>START DATE</th>
+                                    <th>ACCUMULATED DEP.</th>
+                                    <th>CURRENT BOOK VALUE</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-depreciation">
+                                <tr data-date="01 Dec 2024"
+                                    data-dept="HR"
+                                    data-cat="Desktop"
+                                    data-method="SLM"
+                                    data-status="Under Maintenance">
+                                    <td><strong>AST0020</strong></td>
+                                    <td>Dell PowerEdge T350 Server</td>
+                                    <td><span class="category-pill">Desktop</span></td>
+                                    <td>HR</td>
+                                    <td>01 Dec 2024</td>
+                                    <td><strong>₹2,10,000</strong></td>
+                                    <td>SLM</td>
+                                    <td>5 Yrs</td>
+                                    <td>01 Dec 2024</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹70,651</td>
+                                    <td style="color:#059669; font-weight:700;">₹1,39,349</td>
+                                    <td><span class="status-badge badge-maintenance">Under Maintenance</span></td>
+                                </tr>
+                                <tr data-date="01 Nov 2024"
+                                    data-dept="Finance"
+                                    data-cat="Peripheral"
+                                    data-method="SLM"
+                                    data-status="Assigned">
+                                    <td><strong>AST0019</strong></td>
+                                    <td>Epson EB-E01 XGA Projector</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>Finance</td>
+                                    <td>01 Nov 2024</td>
+                                    <td><strong>₹34,500</strong></td>
+                                    <td>SLM</td>
+                                    <td>5 Yrs</td>
+                                    <td>01 Nov 2024</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹11,820</td>
+                                    <td style="color:#059669; font-weight:700;">₹22,680</td>
+                                    <td><span class="status-badge badge-assigned">Assigned</span></td>
+                                </tr>
+                                <tr data-date="15 May 2023"
+                                    data-dept="Operations"
+                                    data-cat="Vehicle"
+                                    data-method="SLM"
+                                    data-status="Under Maintenance">
+                                    <td><strong>AST0018</strong></td>
+                                    <td>Toyota Innova Crysta (Company Car)</td>
+                                    <td><span class="category-pill">Vehicle</span></td>
+                                    <td>Operations</td>
+                                    <td>15 May 2023</td>
+                                    <td><strong>₹21,50,000</strong></td>
+                                    <td>SLM</td>
+                                    <td>5 Yrs</td>
+                                    <td>15 May 2023</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹13,87,690</td>
+                                    <td style="color:#059669; font-weight:700;">₹7,62,310</td>
+                                    <td><span class="status-badge badge-maintenance">Under Maintenance</span></td>
+                                </tr>
+                                <tr data-date="01 Nov 2024"
+                                    data-dept="HR"
+                                    data-cat="Peripheral"
+                                    data-method="WDV"
+                                    data-status="Assigned">
+                                    <td><strong>AST0017</strong></td>
+                                    <td>Sony WH-1000XM5 Headset</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>HR</td>
+                                    <td>01 Nov 2024</td>
+                                    <td><strong>₹29,990</strong></td>
+                                    <td>WDV</td>
+                                    <td>12%</td>
+                                    <td>02 Jun 2025</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹4,238</td>
+                                    <td style="color:#059669; font-weight:700;">₹25,752</td>
+                                    <td><span class="status-badge badge-assigned">Assigned</span></td>
+                                </tr>
+                                <tr data-date="15 Feb 2025"
+                                    data-dept="Operations"
+                                    data-cat="Peripheral"
+                                    data-method="WDV"
+                                    data-status="Assigned">
+                                    <td><strong>AST0016</strong></td>
+                                    <td>Logitech MX Master 3S Mouse</td>
+                                    <td><span class="category-pill">Peripheral</span></td>
+                                    <td>Operations</td>
+                                    <td>15 Feb 2025</td>
+                                    <td><strong>₹8,995</strong></td>
+                                    <td>WDV</td>
+                                    <td>30%</td>
+                                    <td>15 Feb 2025</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹3,706</td>
+                                    <td style="color:#059669; font-weight:700;">₹5,289</td>
+                                    <td><span class="status-badge badge-assigned">Assigned</span></td>
+                                </tr>
+                                <tr data-date="10 Jun 2024"
+                                    data-dept="IT"
+                                    data-cat="Networking"
+                                    data-method="SLM"
+                                    data-status="Available">
+                                    <td><strong>AST0015</strong></td>
+                                    <td>APC 3KVA Online UPS</td>
+                                    <td><span class="category-pill">Networking</span></td>
+                                    <td>IT</td>
+                                    <td>10 Jun 2024</td>
+                                    <td><strong>₹48,000</strong></td>
+                                    <td>SLM</td>
+                                    <td>6 Yrs</td>
+                                    <td>10 Jun 2024</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹15,545</td>
+                                    <td style="color:#059669; font-weight:700;">₹32,455</td>
+                                    <td><span class="status-badge badge-available">Available</span></td>
+                                </tr>
+                                <tr data-date="01 Jul 2024"
+                                    data-dept="IT"
+                                    data-cat="Networking"
+                                    data-method="SLM"
+                                    data-status="Assigned">
+                                    <td><strong>AST0014</strong></td>
+                                    <td>Fortinet FortiGate 60F Firewall</td>
+                                    <td><span class="category-pill">Networking</span></td>
+                                    <td>IT</td>
+                                    <td>01 Jul 2024</td>
+                                    <td><strong>₹89,000</strong></td>
+                                    <td>SLM</td>
+                                    <td>5 Yrs</td>
+                                    <td>01 Jul 2024</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹37,079</td>
+                                    <td style="color:#059669; font-weight:700;">₹51,921</td>
+                                    <td><span class="status-badge badge-assigned">Assigned</span></td>
+                                </tr>
+                                <tr data-date="15 Aug 2024"
+                                    data-dept="IT"
+                                    data-cat="Networking"
+                                    data-method="SLM"
+                                    data-status="Available">
+                                    <td><strong>AST0013</strong></td>
+                                    <td>Cisco Catalyst 24-Port Switch</td>
+                                    <td><span class="category-pill">Networking</span></td>
+                                    <td>IT</td>
+                                    <td>15 Aug 2024</td>
+                                    <td><strong>₹54,000</strong></td>
+                                    <td>SLM</td>
+                                    <td>6 Yrs</td>
+                                    <td>15 Aug 2024</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹17,497</td>
+                                    <td style="color:#059669; font-weight:700;">₹36,503</td>
+                                    <td><span class="status-badge badge-available">Available</span></td>
+                                </tr>
+                                <tr data-date="20 Mar 2025"
+                                    data-dept="Sales"
+                                    data-cat="Mobile"
+                                    data-method="Not Applicable"
+                                    data-status="Available">
+                                    <td><strong>AST0012</strong></td>
+                                    <td>Apple iPhone 15 Pro</td>
+                                    <td><span class="category-pill">Mobile</span></td>
+                                    <td>Sales</td>
+                                    <td>20 Mar 2025</td>
+                                    <td><strong>₹1,34,900</strong></td>
+                                    <td>Not Applicable</td>
+                                    <td>—</td>
+                                    <td>20 Mar 2025</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹0</td>
+                                    <td style="color:#059669; font-weight:700;">₹1,34,900</td>
+                                    <td><span class="status-badge badge-available">Available</span></td>
+                                </tr>
+                                <tr data-date="01 Apr 2025"
+                                    data-dept="Sales"
+                                    data-cat="Mobile"
+                                    data-method="SLM"
+                                    data-status="Available">
+                                    <td><strong>AST0011</strong></td>
+                                    <td>Samsung Galaxy S24 Ultra</td>
+                                    <td><span class="category-pill">Mobile</span></td>
+                                    <td>Sales</td>
+                                    <td>01 Apr 2025</td>
+                                    <td><strong>₹1,29,999</strong></td>
+                                    <td>SLM</td>
+                                    <td>5 Yrs</td>
+                                    <td>01 Apr 2025</td>
+                                    <td style="color:#dc2626; font-weight:600;">₹33,762</td>
+                                    <td style="color:#059669; font-weight:700;">₹96,237</td>
+                                    <td><span class="status-badge badge-available">Available</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Footer matching Image 3 -->
+                    <div class="report-table-footer" id="footer-depreciation">
+                        <div>
+                            Total records: <strong id="total-depreciation">10</strong>
+                            &bull; Grand Total: Cost: <strong style="color:#111827;">₹37,46,384</strong> | Acc.Dep: <strong style="color:#dc2626;">₹16,25,031</strong> | Book Value: <strong style="color:#059669;">₹21,21,353</strong>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-depreciation">Showing 1-10 of 20 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('depreciation', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-depreciation"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 4. TAB: ASSIGNMENT REPORT (Matching Image 4)                   -->
+            <!-- ============================================================= -->
+            <div id="tab-assignment" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="assignmentStartDate" onchange="runReportFilter('assignment')">
+                            <input type="date" class="cream-date-picker" id="assignmentEndDate" onchange="runReportFilter('assignment')">
+                            <select class="cream-select-filter" id="assignmentDeptFilter" onchange="runReportFilter('assignment')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Marketing</option>
+                                <option>Support</option>
+                            </select>
+                            <select class="cream-select-filter" id="assignmentStatusFilter" onchange="runReportFilter('assignment')">
+                                <option value="">All Statuses</option>
+                                <option>Active</option>
+                                <option>Returned</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="assignmentSearchInput" placeholder="Search report..." oninput="runReportFilter('assignment')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('assignment')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('assignment')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('assignment')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('assignment')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-assignment">
+                            <thead>
+                                <tr>
+                                    <th>NO.</th>
+                                    <th>DATE</th>
+                                    <th>EMPLOYEE</th>
+                                    <th>ASSET</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-assignment">
+                                <tr data-date="10 Aug 2026"
+                                    data-dept="IT"
+                                    data-cat="Laptop"
+                                    data-status="Active">
+                                    <td><strong>ASN0021</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td><strong>Rahim Ahmed</strong></td>
+                                    <td>Apple MacBook Pro 16&quot;</td>
+                                    <td>IT</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="10 Aug 2026"
+                                    data-dept="Operations"
+                                    data-cat="Laptop"
+                                    data-status="Active">
+                                    <td><strong>ASN0020</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td><strong>Jamil Hossain</strong></td>
+                                    <td>HP EliteBook 840 G8</td>
+                                    <td>Operations</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="10 Aug 2026"
+                                    data-dept="HR"
+                                    data-cat="Desktop"
+                                    data-status="Active">
+                                    <td><strong>ASN0019</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td><strong>Karim Uddin</strong></td>
+                                    <td>Dell PowerEdge T350 Server</td>
+                                    <td>HR</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="10 Aug 2026"
+                                    data-dept="Marketing"
+                                    data-cat="Networking"
+                                    data-status="Active">
+                                    <td><strong>ASN0018</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td><strong>Sadia Afrin</strong></td>
+                                    <td>Fortinet FortiGate 60F Firewall</td>
+                                    <td>Marketing</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="10 Aug 2026"
+                                    data-dept="Operations"
+                                    data-cat="Peripheral"
+                                    data-status="Active">
+                                    <td><strong>ASN0017</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td><strong>Anisur Rahman</strong></td>
+                                    <td>Logitech MX Master 3S Mouse, Cisco Catalyst 24-Port Switch</td>
+                                    <td>Operations</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="09 Aug 2026"
+                                    data-dept="Finance"
+                                    data-cat="Peripheral"
+                                    data-status="Active">
+                                    <td><strong>ASN0016</strong></td>
+                                    <td>09 Aug 2026</td>
+                                    <td><strong>Fatima Begum</strong></td>
+                                    <td>Logitech MX Master 3S Mouse</td>
+                                    <td>Finance</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="09 Aug 2026"
+                                    data-dept="HR"
+                                    data-cat="Peripheral"
+                                    data-status="Active">
+                                    <td><strong>ASN0015</strong></td>
+                                    <td>09 Aug 2026</td>
+                                    <td><strong>Karim Uddin</strong></td>
+                                    <td>Sony WH-1000XM5 Headset</td>
+                                    <td>HR</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="09 Aug 2026"
+                                    data-dept="IT"
+                                    data-cat="Furniture"
+                                    data-status="Active">
+                                    <td><strong>ASN0014</strong></td>
+                                    <td>09 Aug 2026</td>
+                                    <td><strong>Arifur Rahman</strong></td>
+                                    <td>Ergonomic Mesh Chair</td>
+                                    <td>IT</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="29 Aug 2026"
+                                    data-dept="Operations"
+                                    data-cat="Printer"
+                                    data-status="Active">
+                                    <td><strong>ASN0013</strong></td>
+                                    <td>29 Aug 2026</td>
+                                    <td><strong>Jamil Hossain</strong></td>
+                                    <td>HP LaserJet Pro M404dn</td>
+                                    <td>Operations</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="15 Aug 2026"
+                                    data-dept="Operations"
+                                    data-cat="Laptop"
+                                    data-status="Active">
+                                    <td><strong>ASN0012</strong></td>
+                                    <td>15 Aug 2026</td>
+                                    <td><strong>Abdul Alim</strong></td>
+                                    <td>Apple MacBook Pro 16&quot;</td>
+                                    <td>Operations</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="01 Aug 2026"
+                                    data-dept="Sales"
+                                    data-cat="Laptop"
+                                    data-status="Active">
+                                    <td><strong>ASN0011</strong></td>
+                                    <td>01 Aug 2026</td>
+                                    <td><strong>Priya Sharma</strong></td>
+                                    <td>Lenovo ThinkPad T14s Gen 4</td>
+                                    <td>Sales</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                                <tr data-date="01 Aug 2026"
+                                    data-dept="IT"
+                                    data-cat="Peripheral"
+                                    data-status="Active">
+                                    <td><strong>ASN0010</strong></td>
+                                    <td>01 Aug 2026</td>
+                                    <td><strong>Farhan Chowdhury</strong></td>
+                                    <td>Epson EB-E01 XGA Projector</td>
+                                    <td>IT</td>
+                                    <td><span class="status-badge badge-assigned">Active</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-assignment">
+                        <div>Total records: <strong id="total-assignment">12</strong> &bull; Grand Total: &mdash;</div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-assignment">Showing 1-10 of 12 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('assignment', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-assignment"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 5. TAB: RETURN REPORT (Matching Image 5)                       -->
+            <!-- ============================================================= -->
+            <div id="tab-return" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="returnStartDate" onchange="runReportFilter('return')">
+                            <input type="date" class="cream-date-picker" id="returnEndDate" onchange="runReportFilter('return')">
+                            <select class="cream-select-filter" id="returnDeptFilter" onchange="runReportFilter('return')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Marketing</option>
+                                <option>Support</option>
+                            </select>
+                            <select class="cream-select-filter" id="returnConditionFilter" onchange="runReportFilter('return')">
+                                <option value="">All Conditions</option>
+                                <option>Good</option>
+                                <option>Fair</option>
+                                <option>New</option>
+                                <option>Poor</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="returnSearchInput" placeholder="Search report..." oninput="runReportFilter('return')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('return')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('return')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('return')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('return')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-return">
+                            <thead>
+                                <tr>
+                                    <th>NO.</th>
+                                    <th>DATE</th>
+                                    <th>EMPLOYEE</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>ASSET</th>
+                                    <th>CONDITION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-return">
+                                <tr data-date="10 Aug 2026"
+                                    data-dept="HR"
+                                    data-cat="Desktop"
+                                    data-condition="Fair">
+                                    <td><strong>RET0007</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td><strong>Karim Uddin</strong></td>
+                                    <td>HR</td>
+                                    <td>Dell PowerEdge T350 Server</td>
+                                    <td><span style="background:#ecfdf5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;">Fair</span></td>
+                                </tr>
+                                <tr data-date="09 Aug 2026"
+                                    data-dept="Operations"
+                                    data-cat="Networking"
+                                    data-condition="Good">
+                                    <td><strong>RET0006</strong></td>
+                                    <td>09 Aug 2026</td>
+                                    <td><strong>Anisur Rahman</strong></td>
+                                    <td>Operations</td>
+                                    <td>Cisco Catalyst 24-Port Switch</td>
+                                    <td><span style="background:#ecfdf5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;">Good</span></td>
+                                </tr>
+                                <tr data-date="08 Aug 2026"
+                                    data-dept="IT"
+                                    data-cat="Laptop"
+                                    data-condition="Good">
+                                    <td><strong>RET0005</strong></td>
+                                    <td>08 Aug 2026</td>
+                                    <td><strong>Abdul Alim</strong></td>
+                                    <td>IT</td>
+                                    <td>Apple MacBook Pro 16&quot;</td>
+                                    <td><span style="background:#ecfdf5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;">Good</span></td>
+                                </tr>
+                                <tr data-date="08 Aug 2026"
+                                    data-dept="Finance"
+                                    data-cat="Peripheral"
+                                    data-condition="Good">
+                                    <td><strong>RET0004</strong></td>
+                                    <td>08 Aug 2026</td>
+                                    <td><strong>Fatima Begum</strong></td>
+                                    <td>Finance</td>
+                                    <td>Logitech MX Master 3S Mouse</td>
+                                    <td><span style="background:#ecfdf5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;">Good</span></td>
+                                </tr>
+                                <tr data-date="07 Aug 2026"
+                                    data-dept="Operations"
+                                    data-cat="Peripheral"
+                                    data-condition="Good">
+                                    <td><strong>RET0003</strong></td>
+                                    <td>07 Aug 2026</td>
+                                    <td><strong>Anisur Rahman</strong></td>
+                                    <td>Operations</td>
+                                    <td>Sony WH-1000XM5 Headset</td>
+                                    <td><span style="background:#ecfdf5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;">Good</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-return">
+                        <div>Total records: <strong id="total-return">5</strong> &bull; Grand Total: &mdash;</div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-return">Showing 1-5 of 5 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('return', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-return"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 6. TAB: TRANSFER REPORT                                        -->
+            <!-- ============================================================= -->
+            <div id="tab-transfer" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="transferStartDate" onchange="runReportFilter('transfer')">
+                            <input type="date" class="cream-date-picker" id="transferEndDate" onchange="runReportFilter('transfer')">
+                            <select class="cream-select-filter" id="transferDeptFilter" onchange="runReportFilter('transfer')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Marketing</option>
+                                <option>Support</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="transferSearchInput" placeholder="Search report..." oninput="runReportFilter('transfer')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('transfer')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('transfer')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('transfer')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('transfer')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-transfer">
+                            <thead>
+                                <tr>
+                                    <th>TRANSFER NO.</th>
+                                    <th>DATE</th>
+                                    <th>ASSET</th>
+                                    <th>FROM DEPT</th>
+                                    <th>TO DEPT</th>
+                                    <th>FROM EMPLOYEE</th>
+                                    <th>TO EMPLOYEE</th>
+                                    <th>REASON</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-transfer">
+                                <tr data-date="10 Aug 2026"
+                                    data-dept="IT Operations"
+                                    data-cat="Laptop">
+                                    <td><strong>TRF0004</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td>Apple MacBook Pro 16&quot; (AST0004)</td>
+                                    <td>Operations</td>
+                                    <td>IT</td>
+                                    <td>Jamil Hossain</td>
+                                    <td>Rahim Ahmed</td>
+                                    <td>Department Transfer</td>
+                                </tr>
+                                <tr data-date="10 Aug 2026"
+                                    data-dept="HR Finance"
+                                    data-cat="Desktop">
+                                    <td><strong>TRF0003</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td>Dell PowerEdge T350 Server (AST0020)</td>
+                                    <td>Finance</td>
+                                    <td>HR</td>
+                                    <td>Nigar Sultana</td>
+                                    <td>Karim Uddin</td>
+                                    <td>Department Transfer</td>
+                                </tr>
+                                <tr data-date="09 Aug 2026"
+                                    data-dept="HR Operations"
+                                    data-cat="Peripheral">
+                                    <td><strong>TRF0002</strong></td>
+                                    <td>09 Aug 2026</td>
+                                    <td>Sony WH-1000XM5 Headset (AST0017)</td>
+                                    <td>Operations</td>
+                                    <td>HR</td>
+                                    <td>Anisur Rahman</td>
+                                    <td>Karim Uddin</td>
+                                    <td>Employee Change</td>
+                                </tr>
+                                <tr data-date="08 Aug 2026"
+                                    data-dept="Finance Operations"
+                                    data-cat="Peripheral">
+                                    <td><strong>TRF0001</strong></td>
+                                    <td>08 Aug 2026</td>
+                                    <td>Epson EB-E01 XGA Projector (AST0019)</td>
+                                    <td>Operations</td>
+                                    <td>Finance</td>
+                                    <td>Anisur Rahman</td>
+                                    <td>Fatima Begum</td>
+                                    <td>Location Relocation</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-transfer">
+                        <div>Total records: <strong id="total-transfer">4</strong></div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-transfer">Showing 1-4 of 4 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('transfer', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-transfer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 7. TAB: MAINTENANCE REPORT                                     -->
+            <!-- ============================================================= -->
+            <div id="tab-maintenance" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="maintenanceStartDate" onchange="runReportFilter('maintenance')">
+                            <input type="date" class="cream-date-picker" id="maintenanceEndDate" onchange="runReportFilter('maintenance')">
+                            <select class="cream-select-filter" id="maintenanceDeptFilter" onchange="runReportFilter('maintenance')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                            </select>
+                            <select class="cream-select-filter" id="maintenanceStatusFilter" onchange="runReportFilter('maintenance')">
+                                <option value="">All Statuses</option>
+                                <option>Open</option>
+                                <option>In Progress</option>
+                                <option>Completed</option>
+                            </select>
+                            <select class="cream-select-filter" id="maintenancePriorityFilter" onchange="runReportFilter('maintenance')">
+                                <option value="">All Priorities</option>
+                                <option>Critical</option>
+                                <option>High</option>
+                                <option>Medium</option>
+                                <option>Low</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="maintenanceSearchInput" placeholder="Search report..." oninput="runReportFilter('maintenance')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('maintenance')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('maintenance')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('maintenance')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('maintenance')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-maintenance">
+                            <thead>
+                                <tr>
+                                    <th>TICKET ID</th>
+                                    <th>ASSET</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>ISSUE</th>
+                                    <th>PRIORITY</th>
+                                    <th>STATUS</th>
+                                    <th>REPORTED DATE</th>
+                                    <th>TECHNICIAN / VENDOR</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-maintenance">
+                                <tr data-date="08 Oct 2026"
+                                    data-dept="Operations"
+                                    data-status="Open"
+                                    data-priority="High">
+                                    <td><strong>MNT001</strong></td>
+                                    <td><strong>Modular Workstation Desk</strong></td>
+                                    <td>Operations</td>
+                                    <td>Height adjustment motor stuck on left pillar</td>
+                                    <td><span style="font-weight:700;">High</span></td>
+                                    <td><span class="status-badge badge-retired">Open</span></td>
+                                    <td>08 Oct 2026</td>
+                                    <td>Facility Maintenance</td>
+                                </tr>
+                                <tr data-date="07 Oct 2026"
+                                    data-dept="IT"
+                                    data-status="In Progress"
+                                    data-priority="High">
+                                    <td><strong>MNT002</strong></td>
+                                    <td><strong>Dell Latitude 5440 Laptop</strong></td>
+                                    <td>IT</td>
+                                    <td>Display flickering; diagnostic requested</td>
+                                    <td><span style="font-weight:700;">High</span></td>
+                                    <td><span class="status-badge badge-maintenance">In Progress</span></td>
+                                    <td>07 Oct 2026</td>
+                                    <td>Ravi Mehra</td>
+                                </tr>
+                                <tr data-date="06 Oct 2026"
+                                    data-dept="Operations"
+                                    data-status="In Progress"
+                                    data-priority="Medium">
+                                    <td><strong>MNT003</strong></td>
+                                    <td><strong>Toyota Innova Crysta (Company Car)</strong></td>
+                                    <td>Operations</td>
+                                    <td>Scheduled periodic service &amp; brake inspection</td>
+                                    <td><span style="font-weight:700;">Medium</span></td>
+                                    <td><span class="status-badge badge-maintenance">In Progress</span></td>
+                                    <td>06 Oct 2026</td>
+                                    <td>Authorized Toyota Service</td>
+                                </tr>
+                                <tr data-date="05 Oct 2026"
+                                    data-dept="HR"
+                                    data-status="In Progress"
+                                    data-priority="Critical">
+                                    <td><strong>MNT004</strong></td>
+                                    <td><strong>Dell PowerEdge T350 Server</strong></td>
+                                    <td>HR</td>
+                                    <td>Redundant power supply PSU 2 amber indicator</td>
+                                    <td><span style="font-weight:700;">Critical</span></td>
+                                    <td><span class="status-badge badge-maintenance">In Progress</span></td>
+                                    <td>05 Oct 2026</td>
+                                    <td>Dell Enterprise Care</td>
+                                </tr>
+                                <tr data-date="09 Oct 2026"
+                                    data-dept="HR"
+                                    data-status="Open"
+                                    data-priority="Medium">
+                                    <td><strong>MNT005</strong></td>
+                                    <td><strong>Sony WH-1000XM5 Headset</strong></td>
+                                    <td>HR</td>
+                                    <td>Microphone audio distortion during calls</td>
+                                    <td><span style="font-weight:700;">Medium</span></td>
+                                    <td><span class="status-badge badge-retired">Open</span></td>
+                                    <td>09 Oct 2026</td>
+                                    <td>AudioTech Solutions</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-maintenance">
+                        <div>Total records: <strong id="total-maintenance">5</strong></div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-maintenance">Showing 1-4 of 4 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('maintenance', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-maintenance"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 8. TAB: VENDOR REPORT                                          -->
+            <!-- ============================================================= -->
+            <div id="tab-vendor" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="vendorStartDate" onchange="runReportFilter('vendor')">
+                            <input type="date" class="cream-date-picker" id="vendorEndDate" onchange="runReportFilter('vendor')">
+                            <select class="cream-select-filter" id="vendorDeptFilter" onchange="runReportFilter('vendor')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                            </select>
+                            <select class="cream-select-filter" id="vendorCatFilter" onchange="runReportFilter('vendor')">
+                                <option value="">All Categories</option>
+                                <option>Hardware</option>
+                                <option>Software</option>
+                                <option>Furniture</option>
+                                <option>Automotive</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="vendorSearchInput" placeholder="Search report..." oninput="runReportFilter('vendor')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('vendor')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('vendor')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('vendor')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('vendor')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-vendor">
+                            <thead>
+                                <tr>
+                                    <th>CODE</th>
+                                    <th>VENDOR NAME</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>CONTACT PERSON</th>
+                                    <th>EMAIL</th>
+                                    <th>PHONE</th>
+                                    <th>CATEGORY</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-vendor">
+                                

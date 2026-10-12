@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Transfer — AssetOS</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/pages.css}">
+    <style>
+        body { background: #faf8f5 !important; }
+        .main-wrapper { background: #faf8f5 !important; }
+        .content-body { background: #faf8f5 !important; }
+        .custom-page-card {
+            background: #ffffff;
+            border: 1px solid #e7e5d8;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            margin-top: 1rem;
+        }
+        .action-icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #fff;
+            transition: opacity 0.15s;
+        }
+        .action-icon-btn:hover { opacity: 0.85; }
+        .btn-act-edit { background: #f97316; }
+        .btn-act-del { background: #ef4444; }
+        .btn-black-new {
+            background: #171614;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+        }
+        .cream-search-box {
+            background: #fbf9ea;
+            border: 1px solid #eae5c9;
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            width: 240px;
+        }
+        .cream-search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.85rem;
+            color: #374151;
+            width: 100%;
+        }
+        .btn-export-pill {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .black-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .black-table th {
+            background: #1c1a17;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.76rem;
+            letter-spacing: 0.03em;
+            padding: 0.85rem 1rem;
+            border: none;
+        }
+        .black-table td {
+            padding: 0.95rem 1rem;
+            border-bottom: 1px solid #f1f0e8;
+            color: #27272a;
+            vertical-align: middle;
+        }
+        .black-table tr:hover td { background: #fdfcf9; }
+        .table-footer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1.25rem;
+            font-size: 0.82rem;
+            color: #6b7280;
+        }
+        .form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .pagination-cluster {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .btn-page-nav {
+            padding: 0.25rem 0.6rem;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-page-nav:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .btn-page-nav.active {
+            background: #171614;
+            color: #ffffff;
+            border-color: #171614;
+        }
+        .btn-page-nav:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+<div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+<aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="brand">
+            <div class="brand-icon-box">A</div>
+            <div class="brand-text">
+                <h1>AssetOS</h1>
+                <span>Enterprise Asset Suite</span>
+            </div>
+        </a>
+        <button id="sidebarCloseBtn" class="sidebar-close-btn">&times;</button>
+    </div>
+    <nav class="sidebar-nav">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                        <span>Dashboard</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="javascript:void(0)" class="nav-link active">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        <span>Asset</span>
+                    </div>
+                    <svg class="submenu-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transform:rotate(180deg);"><polyline points="6 15 12 9 18 15"></polyline></svg>
+                </a>
+                <ul class="submenu-list" style="display: flex;">
+                    <li><a href="/assets" class="submenu-link">Asset Entry</a></li>
+                    <li><a href="/assignments" class="submenu-link">Asset Assignment</a></li>
+                    <li><a href="/asset-return" class="submenu-link">Asset Return</a></li>
+                    <li><a href="/asset-transfer" class="submenu-link active">Asset Transfer</a></li>
+                    <li><a href="/maintenance" class="submenu-link">Asset Maintenance</a></li>
+                    <li><a href="/asset-disposal" class="submenu-link">Asset Disposal</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="/employees" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Employee</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/vendors" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                        <span>Vendor</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/expenses" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                        <span>Expense</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        <span>Reports</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/settings" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span>Settings</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">AssetOS v1.0 &bull; 2026</div>
+</aside>
+
+<div class="main-wrapper">
+    <header class="top-header">
+        <div class="header-left">
+            <button id="menuToggleBtn" class="menu-toggle-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+            <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" placeholder="Quick search assets, employee..." oninput="filterTable(this.value,'transferBody')">
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="status-badge-chip">
+                <span class="status-indicator-dot"></span>
+                <span>Firebase Connected</span>
+            </div>
+            <span class="current-date-display" th:text="${currentDate}">Today</span>
+            <div class="user-profile-menu">
+                <button class="user-avatar-btn" onclick="document.getElementById('userDropdown').classList.toggle('open')">
+                    <span th:text="${currentUser != null ? currentUser.avatarInitials : 'AD'}">AD</span>
+                </button>
+                <div id="userDropdown" class="user-dropdown-menu">
+                    <a href="/settings" class="user-dropdown-item">Settings</a>
+                    <a href="/logout" class="user-dropdown-item logout">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="content-body">
+        <div style="margin-bottom: 0.5rem;">
+            <h1 style="font-size:1.45rem; font-weight:700; color:#18181b; margin-bottom:2px;">Asset Transfer</h1>
+            <p style="font-size:0.83rem; color:#71717a;">Transfer assets between departments</p>
+        </div>
+
+        <div class="custom-page-card">
+            <!-- Toolbar matching Image 1 -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem;">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <button class="btn-black-new" onclick="openNewTransferModal()">
+                        <span>+</span> New
+                    </button>
+                    <div class="cream-search-box">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" placeholder="Search..." oninput="filterTable(this.value,'transferBody')">
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <button type="button" class="btn-export-pill" onclick="window.print()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <span>PDF</span>
+                    </button>
+                    <button type="button" class="btn-export-pill" onclick="exportTableToExcel('assetTransferTable', 'Asset_Transfers')">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="17"></line><line x1="16" y1="13" x2="8" y2="17"></line></svg>
+                        <span>Excel</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table with solid black header matching Image 1 -->
+            <div style="overflow-x:auto;">
+                <table class="black-table" id="assetTransferTable">
+                    <thead>
+                        <tr>
+                            <th>TRANSFER NO.</th>
+                            <th>DATE</th>
+                            <th>ASSET</th>
+                            <th>FROM DEPT</th>
+                            <th>TO DEPT</th>
+                            <th>FROM EMPLOYEE</th>
+                            <th>TO EMPLOYEE</th>
+                            <th>REASON</th>
+                            <th>TRANSFERRED BY</th>
+                            <th style="text-align:center;">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transferBody">
+                        <tr th:each="t : ${transfers}">
+                            <td><strong th:text="${t.transferNo}">TRF0004</strong></td>
+                            <td th:text="${t.date}">10 Aug 2026</td>
+                            <td th:text="${t.assetName}">Apple MacBook Pro 16" (AST0004)</td>
+                            <td th:text="${t.fromDepartment}">Operations</td>
+                            <td th:text="${t.toDepartment}">IT</td>
+                            <td th:text="${t.fromEmployee}">Jamil Hossain</td>
+                            <td th:text="${t.toEmployee}">Rahim Ahmed</td>
+                            <td th:text="${t.reason}">Department Transfer</td>
+                            <td th:text="${t.transferredBy}">Admin</td>
+                            <td style="text-align:center;">
+                                <div style="display:inline-flex; gap:0.35rem;">
+                                    <button class="action-icon-btn btn-act-edit" title="Edit Transfer"
+                                            th:attr="onclick='openEditTransferModal(\'' + ${t.transferNo} + '\', \'' + ${t.date} + '\', \'' + ${t.assetTag} + '\', \'' + ${t.assetName} + '\', \'' + ${t.fromDepartment} + '\', \'' + ${t.toDepartment} + '\', \'' + ${t.fromEmployee} + '\', \'' + ${t.toEmployee} + '\', \'' + ${t.reason} + '\', \'' + ${t.remarks} + '\')'">
+                                        ✏️
+                                    </button>
+                                    <form th:action="@{/asset-transfer/delete}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this transfer?');">
+                                        <input type="hidden" name="transferNo" th:value="${t.transferNo}">
+                                        <button type="submit" class="action-icon-btn btn-act-del" title="Delete Transfer">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer matching Image 1 with Real-Time Pagination -->
+            <div class="table-footer-row">
+                <span>Total: <strong id="transferTotalDisplay" th:text="${transfers.size()}">4</strong></span>
+                <div style="display:flex; align-items:center; gap:1.25rem;">
+                    <span id="transferShowingDisplay" th:text="'Showing 1-' + ${transfers.size()} + ' of ' + ${transfers.size()} + ' entries'">Showing 1-4 of 4 entries</span>
+                    <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                        <span>Rows per page:</span>
+                        <select id="transferPageSizeSelect" class="form-control" style="width: auto; padding: 0.2rem 0.5rem; font-size:0.8rem; background:#fbf9ea; border:1px solid #ebe7cf; border-radius:6px; cursor:pointer;" onchange="changeTransferPageSize(this.value)">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="25">25</option>
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="pagination-cluster" id="transferPaginationNav"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- NEW / EDIT TRANSFER MODAL -->
+<div id="transferModal" class="modal-overlay" onclick="if(event.target===this)closeModal('transferModal')">
+    <div class="modal-card" style="max-width:660px; width:95%; background:#fff; border-radius:14px; padding:1.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <h3 id="transferModalTitle" style="font-size:1.15rem; font-weight:700; color:#18181b;">Asset Transfer</h3>
+            <button onclick="closeModal('transferModal')" style="background:none; border:none; font-size:1.3rem; cursor:pointer;">&times;</button>
+        </div>
+        <form th:action="@{/asset-transfer/save}" method="post">
+            <div style="display:flex; flex-direction:column; gap:1rem;">
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Transfer No.</label>
+                        <input type="text" name="transferNo" id="trfNo" class="form-control" th:value="${nextNo}" readonly style="background:#f3f4f6;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Transfer Date *</label>
+                        <input type="date" name="date" id="trfDate" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Asset to Transfer *</label>
+                    <select name="assetTag" id="trfAssetSelect" class="form-control" required onchange="fillTransferAsset(this)">
+                        <option value="">— Select Asset —</option>
+                        <option th:each="a : ${assets}" th:value="${a.assetTag}" th:text="${a.assetTag + ' — ' + a.name}" th:data-name="${a.name}" th:data-cat="${a.category}" th:data-dept="${a.department}" th:data-holder="${a.holder}"></option>
+                    </select>
+                </div>
+                <input type="hidden" name="assetName" id="trfAssetName">
+                <input type="hidden" name="category" id="trfCat">
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">From Employee</label>
+                        <input type="text" name="fromEmployee" id="trfFromEmp" class="form-control" placeholder="From employee">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">From Department</label>
+                        <input type="text" name="fromDepartment" id="trfFromDept" class="form-control" placeholder="From department">
+                    </div>
+                </div>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">To Employee *</label>
+                        <select name="toEmployee" id="trfToEmpSelect" class="form-control" required onchange="fillTransferToDept(this)">
+                            <option value="">— Select Employee —</option>
+                            <option th:each="e : ${employees}" th:value="${e.fullName}" th:text="${e.employeeId + ' — ' + e.fullName}" th:data-dept="${e.department}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">To Department</label>
+                        <input type="text" name="toDepartment" id="trfToDept" class="form-control" placeholder="To department">
+                    </div>
+                </div>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Reason *</label>
+                        <select name="reason" id="trfReason" class="form-control" required>
+                            <option>Department Transfer</option>
+                            <option>Employee Change</option>
+                            <option>Location Relocation</option>
+                            <option>Role Change</option>
+                            <option>Device Upgrade</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Transferred By</label>
+                        <input type="text" name="transferredBy" class="form-control" value="Admin" readonly style="background:#f3f4f6;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Remarks</label>
+                    <textarea name="remarks" id="trfRemarks" class="form-control" rows="2" placeholder="Optional notes..."></textarea>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.25rem;">
+                <button type="button" class="btn-secondary" onclick="closeModal('transferModal')">Cancel</button>
+                <button type="submit" class="btn-primary" style="background:#171614; border:none; padding:0.5rem 1.25rem; border-radius:8px; color:#fff; font-weight:600;">Save Transfer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/js/dashboard.js}"></script>
+<script>
+let transferPaginationState = { page: 1, size: 10 };
+
+function filterTable(q, bodyId) {
+    const searchInput = document.querySelector('.cream-search-box input');
+    const term = (q !== undefined ? q : (searchInput ? searchInput.value : '')).toLowerCase().trim();
+    const rows = Array.from(document.querySelectorAll('#transferBody tr'));
+    let matched = [];
+    rows.forEach(r => {
+        const text = r.textContent.toLowerCase();
+        if (text.includes(term)) matched.push(r);
+        r.style.display = 'none';
+    });
+    paginateTransferRows(matched);
+}
+
+function paginateTransferRows(matched) {
+    const total = matched.length;
+    const sizeVal = transferPaginationState.size;
+    const pageSize = (sizeVal === 'all') ? (total || 1) : parseInt(sizeVal, 10);
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+    if (transferPaginationState.page > totalPages) transferPaginationState.page = totalPages;
+    if (transferPaginationState.page < 1) transferPaginationState.page = 1;
+
+    const startIdx = (transferPaginationState.page - 1) * pageSize;
+    const endIdx = (sizeVal === 'all') ? total : Math.min(startIdx + pageSize, total);
+
+    matched.forEach((r, idx) => {
+        r.style.display = (idx >= startIdx && idx < endIdx) ? '' : 'none';
+    });
+
+    const tot = document.getElementById('transferTotalDisplay');
+    const show = document.getElementById('transferShowingDisplay');
+    if (tot) tot.textContent = total;
+    if (show) show.textContent = total === 0 ? 'Showing 0-0 of 0 entries' : `Showing ${startIdx + 1}-${endIdx} of ${total} entries`;
+
+    const nav = document.getElementById('transferPaginationNav');
+    if (nav) {
+        if (total === 0 || totalPages <= 1) {
+            nav.innerHTML = '';
+            return;
+        }
+        let html = `<button type="button" class="btn-page-nav" ${transferPaginationState.page <= 1 ? 'disabled' : ''} onclick="goToTransferPage(${transferPaginationState.page - 1})">&lt; Prev</button>`;
+        for (let p = 1; p <= totalPages; p++) {
+            html += `<button type="button" class="btn-page-nav ${transferPaginationState.page === p ? 'active' : ''}" onclick="goToTransferPage(${p})">${p}</button>`;
+        }
+        html += `<button type="button" class="btn-page-nav" ${transferPaginationState.page >= totalPages ? 'disabled' : ''} onclick="goToTransferPage(${transferPaginationState.page + 1})">Next &gt;</button>`;
+        nav.innerHTML = html;
+    }
+}
+
+function changeTransferPageSize(v) {
+    transferPaginationState.size = v;
+    transferPaginationState.page = 1;
+    filterTable(undefined, 'transferBody');
+}
+
+function goToTransferPage(p) {
+    transferPaginationState.page = p;
+    filterTable(undefined, 'transferBody');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    filterTable('', 'transferBody');
+});
+function fillTransferAsset(sel) {
+    const opt = sel.options[sel.selectedIndex];
+    document.getElementById('trfAssetName').value = opt.getAttribute('data-name') || '';
+    document.getElementById('trfCat').value = opt.getAttribute('data-cat') || '';
+    document.getElementById('trfFromEmp').value = opt.getAttribute('data-holder') || '';
+    document.getElementById('trfFromDept').value = opt.getAttribute('data-dept') || '';
+}
+function fillTransferToDept(sel) {
+    const opt = sel.options[sel.selectedIndex];
+    document.getElementById('trfToDept').value = opt.getAttribute('data-dept') || '';
+}
+function openNewTransferModal() {
+    document.getElementById('transferModalTitle').textContent = 'New Asset Transfer';
+    document.getElementById('trfNo').value = '[[${nextNo}]]';
+    document.getElementById('trfDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('trfRemarks').value = '';
+    openModal('transferModal');
+}
+function openEditTransferModal(no, date, tag, name, fromDept, toDept, fromEmp, toEmp, reason, remarks) {
+    document.getElementById('transferModalTitle').textContent = 'Edit Asset Transfer';
+    document.getElementById('trfNo').value = no;
+    document.getElementById('trfAssetName').value = name;
+    document.getElementById('trfFromDept').value = fromDept;
+    document.getElementById('trfToDept').value = toDept;
+    document.getElementById('trfFromEmp').value = fromEmp;
+    document.getElementById('trfRemarks').value = remarks || '';
+    const rSel = document.getElementById('trfReason');
+    for (let i = 0; i < rSel.options.length; i++) {
+        if (rSel.options[i].value === reason) { rSel.selectedIndex = i; break; }
+    }
+    const aSel = document.getElementById('trfAssetSelect');
+    for (let i = 0; i < aSel.options.length; i++) {
+        if (aSel.options[i].value === tag) { aSel.selectedIndex = i; break; }
+    }
+    const eSel = document.getElementById('trfToEmpSelect');
+    for (let i = 0; i < eSel.options.length; i++) {
+        if (eSel.options[i].value === toEmp) { eSel.selectedIndex = i; break; }
+    }
+    openModal('transferModal');
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+</script>
+</body>
+</html>

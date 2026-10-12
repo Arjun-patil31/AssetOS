@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics — AssetOS Enterprise</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/pages.css}">
+    <style>
+        body, .main-wrapper, .content-body {
+            background: #faf8f5 !important;
+        }
+
+        /* Top Horizontal Tab Navigation matching Images 2-5 */
+        .report-nav-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 1.25rem;
+            overflow-x: auto;
+            background: transparent;
+        }
+
+        .report-tab-btn {
+            padding: 0.65rem 1.25rem;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            white-space: nowrap;
+            border: none;
+            background: none;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.15s ease;
+        }
+
+        .report-tab-btn:hover {
+            color: #18181b;
+        }
+
+        .report-tab-btn.active {
+            color: #18181b;
+            border-bottom-color: #18181b;
+            font-weight: 700;
+        }
+
+        /* Card Container matching Images 2-5 */
+        .report-card-container {
+            background: #ffffff;
+            border: 1px solid #ebe7cf;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            margin-top: 0.5rem;
+        }
+
+        /* Filters Toolbar matching Images 2-5 */
+        .report-filters-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            background: #ffffff;
+        }
+
+        .filters-left-group {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+        }
+
+        .filters-right-group {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+        }
+
+        .cream-date-picker {
+            padding: 0.45rem 0.65rem;
+            font-size: 0.82rem;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            background: #fbf9ea;
+            color: #374151;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.15s;
+        }
+        .cream-date-picker:focus {
+            border-color: #f59e0b;
+        }
+
+        .cream-select-filter {
+            padding: 0.45rem 0.75rem;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            background: #fbf9ea;
+            color: #374151;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .cream-select-filter:focus {
+            border-color: #f59e0b;
+        }
+
+        .report-search-input-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #fbf9ea;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            padding: 0.45rem 0.8rem;
+            min-width: 220px;
+            transition: border-color 0.15s;
+        }
+        .report-search-input-box:focus-within {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+        }
+        .report-search-input-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.83rem;
+            color: #1f2937;
+            width: 100%;
+        }
+
+        .btn-report-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #ffffff;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-report-export:hover {
+            background: #fbf9ea;
+            border-color: #d6d0ae;
+            transform: translateY(-1px);
+        }
+
+        /* Black Table Header matching Images 2-5 */
+        .black-report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .black-report-table th {
+            background: #18181b;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.76rem;
+            letter-spacing: 0.04em;
+            padding: 0.85rem 1rem;
+            border: none;
+            white-space: nowrap;
+        }
+        .black-report-table td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #f1efe2;
+            color: #27272a;
+            vertical-align: middle;
+        }
+        .black-report-table tbody tr:hover td {
+            background: #faf8ed;
+        }
+
+        /* Footer & Real-Time Pagination Controls */
+        .report-table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.82rem;
+            color: #6b7280;
+            border-top: 1px solid #f1efe2;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .pagination-cluster {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-page-nav {
+            padding: 0.25rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #374151;
+            transition: all 0.12s;
+        }
+        .btn-page-nav:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .btn-page-nav.active {
+            background: #18181b;
+            color: #ffffff;
+            border-color: #18181b;
+        }
+        .btn-page-nav:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Empty State Illustration matching Image 2 */
+        .mailbox-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4.5rem 1.5rem;
+            text-align: center;
+            background: #faf9f2;
+            border: 1px dashed #ebe7cf;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        .mailbox-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .mailbox-hint-text {
+            color: #6b7280;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .tab-panel-section {
+            display: none;
+        }
+        .tab-panel-section.active {
+            display: block;
+        }
+
+        @media print {
+            aside, .top-header, .report-nav-tabs, .report-filters-bar, .report-table-footer, .breadcrumb, #menuToggleBtn {
+                display: none !important;
+            }
+            .tab-panel-section.active {
+                display: block !important;
+            }
+            .report-card-container {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
+            body, .main-wrapper, .content-body {
+                background: #ffffff !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">AssetOS</span>
+                    <span class="brand-tag">Enterprise Asset Suite</span>
+                </div>
+            </a>
+            <button id="sidebarCloseBtn" class="sidebar-close-btn" aria-label="Close Sidebar">&times;</button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                            <span>Dashboard</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item has-submenu">
+                    <a href="javascript:void(0)" class="nav-link" onclick="toggleSubmenu('assetSubmenu', this)">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                            <span>Asset</span>
+                        </div>
+                        <svg class="submenu-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <ul id="assetSubmenu" class="submenu-list">
+                        <li><a href="/assets" class="submenu-link">Asset Entry</a></li>
+                        <li><a href="/assignments" class="submenu-link">Asset Assignment</a></li>
+                        <li><a href="/asset-return" class="submenu-link">Asset Return</a></li>
+                        <li><a href="/asset-transfer" class="submenu-link">Asset Transfer</a></li>
+                        <li><a href="/maintenance" class="submenu-link">Asset Maintenance</a></li>
+                        <li><a href="/asset-disposal" class="submenu-link">Asset Disposal</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="/employees" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <span>Employee</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/vendors" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            <span>Vendor</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/expenses" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            <span>Expense</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link active">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            <span>Reports</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/settings" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <span>Settings</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">AssetOS v1.0 &bull; 2026</div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <header class="top-header">
+            <div class="header-left">
+                <button id="menuToggleBtn" class="menu-toggle-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+                <div style="display:flex; flex-direction:column;">
+                    <span style="font-size:1.15rem; font-weight:700; color:#18181b;">Reports</span>
+                    <span style="font-size:0.78rem; color:#71717a;">Generate and export reports</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="status-badge-chip">
+                    <span class="status-indicator-dot"></span>
+                    <span>Firebase Connected</span>
+                </div>
+
+                <div class="cream-search-box" style="min-width: 250px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Quick search assets, employee..." oninput="globalActiveReportSearch(this.value)">
+                </div>
+
+                <span class="current-date-display" th:text="${currentDate}">Today</span>
+
+                <div class="user-profile-menu">
+                    <button class="user-avatar-btn" onclick="document.getElementById('userDropdown').classList.toggle('show')">
+                        <span th:text="${currentUser != null ? currentUser.avatarInitials : 'AD'}">AD</span>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown-menu">
+                        <a href="/settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/logout" class="dropdown-item logout">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-body" style="padding: 1.25rem 2rem;">
+            <!-- Top Horizontal Tabs (Matching Images 1, 2, 3, 4, 5) -->
+            <div class="report-nav-tabs" id="reportTabBar">
+                <button class="report-tab-btn active" type="button" onclick="switchReportTab('tab-asset', this)">Asset</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-employee', this)">Employee</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-depreciation', this)">Depreciation</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-assignment', this)">Assignment</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-return', this)">Return</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-transfer', this)">Transfer</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-maintenance', this)">Maintenance</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-vendor', this)">Vendor</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-disposal', this)">Disposal</button>
+                <button class="report-tab-btn" type="button" onclick="switchReportTab('tab-expense', this)">Expense</button>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 1. TAB: ASSET REPORT                                           -->
+            <!-- ============================================================= -->
+            <div id="tab-asset" class="tab-panel-section active">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="assetStartDate" onchange="runReportFilter('asset')">
+                            <input type="date" class="cream-date-picker" id="assetEndDate" onchange="runReportFilter('asset')">
+                            <!-- Select Asset dropdown matching Image 3 -->
+                            <select class="cream-select-filter" id="assetItemFilter" onchange="runReportFilter('asset')">
+                                <option value="">Select Asset</option>
+                                <option th:each="a : ${allAssets}"
+                                        th:value="${a.assetTag}"
+                                        th:text="${a.assetTag + ' - ' + a.name}">AST0020 - Dell PowerEdge T350 Server</option>
+                            </select>
+                            <select class="cream-select-filter" id="assetCatFilter" onchange="runReportFilter('asset')">
+                                <option value="">All Categories</option>
+                                <option>Laptop</option>
+                                <option>Desktop</option>
+                                <option>Mobile</option>
+                                <option>Networking</option>
+                                <option>Printer</option>
+                                <option>Peripheral</option>
+                                <option>Furniture</option>
+                                <option>Vehicle</option>
+                            </select>
+                            <select class="cream-select-filter" id="assetDeptFilter" onchange="runReportFilter('asset')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Warehouse</option>
+                            </select>
+                            <select class="cream-select-filter" id="assetStatusFilter" onchange="runReportFilter('asset')">
+                                <option value="">All Statuses</option>
+                                <option>Available</option>
+                                <option>Assigned</option>
+                                <option>Under Maintenance</option>
+                                <option>Retired</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="assetSearchInput" placeholder="Search report..." oninput="runReportFilter('asset')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('asset')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('asset')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('asset')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('asset')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-asset">
+                            <thead>
+                                <tr>
+                                    <th>NO.</th>
+                                    <th>ASSET TAG</th>
+                                    <th>NAME / MODEL</th>
+                                    <th>CATEGORY</th>
+                                    <th>BRAND</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>STATUS</th>
+                                    <th>CONDITION</th>
+                                    <th>PURCHASE COST</th>
+                                    <th>BOOK VALUE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-asset">
+                                <tr th:each="a, i : ${allAssets}"
+                                    th:data-date="${a.purchaseDate}"
+                                    th:data-cat="${a.category}"
+                                    th:data-dept="${a.department}"
+                                    th:data-status="${a.status}">
+                                    <td class="row-num" th:text="${i.count}">1</td>
+                                    <td><strong th:text="${a.assetTag}">AST0020</strong></td>
+                                    <td th:text="${a.name}">Dell PowerEdge T350 Server</td>
+                                    <td><span class="category-pill" th:text="${a.category}">Desktop</span></td>
+                                    <td th:text="${a.brand}">Dell</td>
+                                    <td th:text="${a.department}">HR</td>
+                                    <td><strong th:text="${a.status}">Under Maintenance</strong></td>
+                                    <td th:text="${a.condition}">New</td>
+                                    <td th:text="${a.purchaseCost}">₹2,10,000</td>
+                                    <td th:text="${a.bookValue}">₹1,39,349</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-asset">
+                        <div>
+                            Total records: <strong id="total-asset" th:text="${allAssets.size()}">20</strong>
+                            &bull; Grand Total: <span style="font-weight:600; color:#059669;">₹37,46,384</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-asset">Showing 1-10 of 20 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('asset', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-asset"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 2. TAB: EMPLOYEE REPORT (Matching Image 2)                     -->
+            <!-- ============================================================= -->
+            <div id="tab-employee" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="employeeStartDate" onchange="runEmployeeReportFilter()">
+                            <input type="date" class="cream-date-picker" id="employeeEndDate" onchange="runEmployeeReportFilter()">
+                            <select class="cream-select-filter" id="employeeDeptFilter" onchange="runEmployeeReportFilter()">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Marketing</option>
+                                <option>Support</option>
+                            </select>
+                            <select class="cream-select-filter" id="employeeSelectDropdown" onchange="handleEmployeeSelectChange(this.value)">
+                                <option value="">All Employees</option>
+                                <option th:each="emp : ${employees}"
+                                        th:value="${emp.fullName}"
+                                        th:text="${emp.employeeId + ' — ' + emp.fullName}">EMP0018 — Anisur Rahman</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="employeeSearchInput" placeholder="Search report..." oninput="runEmployeeReportFilter()">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('employee')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('employee')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('employee')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('employee')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <!-- Table (Live Display with real-time Employee / Dept / Date filtering) -->
+                    <div id="employeeTableWrapper" style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-employee">
+                            <thead>
+                                <tr>
+                                    <th>NO.</th>
+                                    <th>ASSET TAG</th>
+                                    <th>NAME / MODEL</th>
+                                    <th>CATEGORY</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>ASSIGNED TO</th>
+                                    <th>ASSIGNED DATE</th>
+                                    <th>RETURN DATE</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-employee">
+                                <tr th:each="asn, i : ${assignments}"
+                                    th:data-employee="${asn.employeeName}"
+                                    th:data-dept="${asn.department}"
+                                    th:data-cat="${asn.category}"
+                                    th:data-date="${asn.assignedDate}">
+                                    <td class="row-num" th:text="${i.count}">1</td>
+                                    <td><strong th:text="${asn.assetTag}">AST0004</strong></td>
+                                    <td th:text="${asn.assetName}">Apple MacBook Pro</td>
+                                    <td><span class="category-pill" th:text="${asn.category}">Laptop</span></td>
+                                    <td th:text="${asn.department}">IT</td>
+                                    <td><strong th:text="${asn.employeeName}">Rahim Ahmed</strong></td>
+                                    <td th:text="${asn.assignedDate}">09 Aug 2026</td>
+                                    <td th:text="${asn.expectedReturn != null && !asn.expectedReturn.isBlank() ? asn.expectedReturn : 'Permanent'}">Permanent</td>
+                                    <td><span class="status-badge" th:classappend="${asn.statusBadgeClass}" th:text="${asn.status}">Active</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-employee">
+                        <div>Total records: <strong id="total-employee">0</strong> &bull; Grand Total: &mdash;</div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-employee">Showing 0-0 of 0 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('employee', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-employee"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 3. TAB: DEPRECIATION REPORT (Matching Image 3)                 -->
+            <!-- ============================================================= -->
+            <div id="tab-depreciation" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="depreciationStartDate" onchange="runReportFilter('depreciation')">
+                            <input type="date" class="cream-date-picker" id="depreciationEndDate" onchange="runReportFilter('depreciation')">
+                            <select class="cream-select-filter" id="depreciationCatFilter" onchange="runReportFilter('depreciation')">
+                                <option value="">All Categories</option>
+                                <option>Desktop</option>
+                                <option>Laptop</option>
+                                <option>Peripheral</option>
+                                <option>Vehicle</option>
+                                <option>Networking</option>
+                                <option>Mobile</option>
+                            </select>
+                            <select class="cream-select-filter" id="depreciationDeptFilter" onchange="runReportFilter('depreciation')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                            </select>
+                            <select class="cream-select-filter" id="depreciationMethodFilter" onchange="runReportFilter('depreciation')">
+                                <option value="">All Methods</option>
+                                <option>SLM</option>
+                                <option>WDV</option>
+                                <option>Not Applicable</option>
+                            </select>
+                            <select class="cream-select-filter" id="depreciationStatusFilter" onchange="runReportFilter('depreciation')">
+                                <option value="">All Statuses</option>
+                                <option>Available</option>
+                                <option>Assigned</option>
+                                <option>Under Maintenance</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="depreciationSearchInput" placeholder="Search report..." oninput="runReportFilter('depreciation')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('depreciation')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('depreciation')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('depreciation')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('depreciation')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-depreciation">
+                            <thead>
+                                <tr>
+                                    <th>ASSET ID</th>
+                                    <th>ASSET NAME</th>
+                                    <th>CATEGORY</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>PURCHASE DATE</th>
+                                    <th>PURCHASE COST</th>
+                                    <th>METHOD</th>
+                                    <th>USEFUL LIFE / RATE</th>
+                                    <th>START DATE</th>
+                                    <th>ACCUMULATED DEP.</th>
+                                    <th>CURRENT BOOK VALUE</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-depreciation">
+                                <tr th:each="d : ${depreciationRecords}"
+                                    th:data-date="${d.purchaseDate}"
+                                    th:data-dept="${d.department}"
+                                    th:data-cat="${d.category}"
+                                    th:data-method="${d.method}"
+                                    th:data-status="${d.status}">
+                                    <td><strong th:text="${d.assetId}">AST0020</strong></td>
+                                    <td th:text="${d.assetName}">Dell PowerEdge T350 Server</td>
+                                    <td><span class="category-pill" th:text="${d.category}">Desktop</span></td>
+                                    <td th:text="${d.department}">HR</td>
+                                    <td th:text="${d.purchaseDate}">30 Nov 2024</td>
+                                    <td><strong th:text="${d.purchaseCost}">₹2,10,000</strong></td>
+                                    <td th:text="${d.method}">SLM</td>
+                                    <td th:text="${d.usefulLifeRate}">5 Yrs</td>
+                                    <td th:text="${d.startDate}">30 Nov 2024</td>
+                                    <td style="color:#dc2626; font-weight:600;" th:text="${d.accumulatedDep}">₹70,592</td>
+                                    <td style="color:#059669; font-weight:700;" th:text="${d.currentBookValue}">₹1,39,408</td>
+                                    <td><span class="status-badge" th:classappend="${d.statusBadgeClass}" th:text="${d.status}">Under Maintenance</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Footer matching Image 3 -->
+                    <div class="report-table-footer" id="footer-depreciation">
+                        <div>
+                            Total records: <strong id="total-depreciation" th:text="${depreciationRecords.size()}">20</strong>
+                            &bull; Grand Total: Cost: <strong style="color:#111827;">₹37,46,384</strong> | Acc.Dep: <strong style="color:#dc2626;">₹16,25,031</strong> | Book Value: <strong style="color:#059669;">₹21,21,353</strong>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-depreciation">Showing 1-10 of 20 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('depreciation', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-depreciation"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 4. TAB: ASSIGNMENT REPORT (Matching Image 4)                   -->
+            <!-- ============================================================= -->
+            <div id="tab-assignment" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="assignmentStartDate" onchange="runReportFilter('assignment')">
+                            <input type="date" class="cream-date-picker" id="assignmentEndDate" onchange="runReportFilter('assignment')">
+                            <select class="cream-select-filter" id="assignmentDeptFilter" onchange="runReportFilter('assignment')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Marketing</option>
+                                <option>Support</option>
+                            </select>
+                            <select class="cream-select-filter" id="assignmentStatusFilter" onchange="runReportFilter('assignment')">
+                                <option value="">All Statuses</option>
+                                <option>Active</option>
+                                <option>Returned</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="assignmentSearchInput" placeholder="Search report..." oninput="runReportFilter('assignment')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('assignment')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('assignment')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('assignment')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('assignment')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-assignment">
+                            <thead>
+                                <tr>
+                                    <th>NO.</th>
+                                    <th>DATE</th>
+                                    <th>EMPLOYEE</th>
+                                    <th>ASSET</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-assignment">
+                                <tr th:each="a, i : ${assignments}"
+                                    th:data-date="${a.assignedDate}"
+                                    th:data-dept="${a.department}"
+                                    th:data-cat="${a.category}"
+                                    th:data-status="${a.status}">
+                                    <td><strong th:text="${a.assignmentId}">ASN0021</strong></td>
+                                    <td th:text="${a.assignedDate}">09 Aug 2026</td>
+                                    <td><strong th:text="${a.employeeName}">Rahim Ahmed</strong></td>
+                                    <td th:text="${a.assetName}">Apple MacBook Pro 16"</td>
+                                    <td th:text="${a.department}">IT</td>
+                                    <td><span class="status-badge" th:classappend="${a.statusBadgeClass}" th:text="${a.status}">Active</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-assignment">
+                        <div>Total records: <strong id="total-assignment" th:text="${assignments.size()}">12</strong> &bull; Grand Total: &mdash;</div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-assignment">Showing 1-10 of 12 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('assignment', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-assignment"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 5. TAB: RETURN REPORT (Matching Image 5)                       -->
+            <!-- ============================================================= -->
+            <div id="tab-return" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="returnStartDate" onchange="runReportFilter('return')">
+                            <input type="date" class="cream-date-picker" id="returnEndDate" onchange="runReportFilter('return')">
+                            <select class="cream-select-filter" id="returnDeptFilter" onchange="runReportFilter('return')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Marketing</option>
+                                <option>Support</option>
+                            </select>
+                            <select class="cream-select-filter" id="returnConditionFilter" onchange="runReportFilter('return')">
+                                <option value="">All Conditions</option>
+                                <option>Good</option>
+                                <option>Fair</option>
+                                <option>New</option>
+                                <option>Poor</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="returnSearchInput" placeholder="Search report..." oninput="runReportFilter('return')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('return')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('return')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('return')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('return')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-return">
+                            <thead>
+                                <tr>
+                                    <th>NO.</th>
+                                    <th>DATE</th>
+                                    <th>EMPLOYEE</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>ASSET</th>
+                                    <th>CONDITION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-return">
+                                <tr th:each="r : ${returns}"
+                                    th:data-date="${r.date}"
+                                    th:data-dept="${r.department}"
+                                    th:data-cat="${r.category}"
+                                    th:data-condition="${r.condition}">
+                                    <td><strong th:text="${r.returnNo}">RET0007</strong></td>
+                                    <td th:text="${r.date}">09 Aug 2026</td>
+                                    <td><strong th:text="${r.returnedBy}">Jamil Hossain</strong></td>
+                                    <td th:text="${r.department}">Operations</td>
+                                    <td th:text="${r.assetName}">HP LaserJet Pro M404dn</td>
+                                    <td><span style="background:#ecfdf5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;" th:text="${r.condition}">Good</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-return">
+                        <div>Total records: <strong id="total-return" th:text="${returns.size()}">5</strong> &bull; Grand Total: &mdash;</div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-return">Showing 1-5 of 5 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('return', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-return"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 6. TAB: TRANSFER REPORT                                        -->
+            <!-- ============================================================= -->
+            <div id="tab-transfer" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="transferStartDate" onchange="runReportFilter('transfer')">
+                            <input type="date" class="cream-date-picker" id="transferEndDate" onchange="runReportFilter('transfer')">
+                            <select class="cream-select-filter" id="transferDeptFilter" onchange="runReportFilter('transfer')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                                <option>Marketing</option>
+                                <option>Support</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="transferSearchInput" placeholder="Search report..." oninput="runReportFilter('transfer')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('transfer')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('transfer')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('transfer')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('transfer')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-transfer">
+                            <thead>
+                                <tr>
+                                    <th>TRANSFER NO.</th>
+                                    <th>DATE</th>
+                                    <th>ASSET</th>
+                                    <th>FROM DEPT</th>
+                                    <th>TO DEPT</th>
+                                    <th>FROM EMPLOYEE</th>
+                                    <th>TO EMPLOYEE</th>
+                                    <th>REASON</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-transfer">
+                                <tr th:each="t : ${transfers}"
+                                    th:data-date="${t.date}"
+                                    th:data-dept="${t.toDepartment + ' ' + t.fromDepartment}"
+                                    th:data-cat="${t.category}">
+                                    <td><strong th:text="${t.transferNo}">TRF0004</strong></td>
+                                    <td th:text="${t.date}">10 Aug 2026</td>
+                                    <td th:text="${t.assetName}">Apple MacBook Pro</td>
+                                    <td th:text="${t.fromDepartment}">Operations</td>
+                                    <td th:text="${t.toDepartment}">IT</td>
+                                    <td th:text="${t.fromEmployee}">Jamil Hossain</td>
+                                    <td th:text="${t.toEmployee}">Rahim Ahmed</td>
+                                    <td th:text="${t.reason}">Project handover</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-transfer">
+                        <div>Total records: <strong id="total-transfer" th:text="${transfers.size()}">4</strong></div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-transfer">Showing 1-4 of 4 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('transfer', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-transfer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 7. TAB: MAINTENANCE REPORT                                     -->
+            <!-- ============================================================= -->
+            <div id="tab-maintenance" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="maintenanceStartDate" onchange="runReportFilter('maintenance')">
+                            <input type="date" class="cream-date-picker" id="maintenanceEndDate" onchange="runReportFilter('maintenance')">
+                            <select class="cream-select-filter" id="maintenanceDeptFilter" onchange="runReportFilter('maintenance')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                            </select>
+                            <select class="cream-select-filter" id="maintenanceStatusFilter" onchange="runReportFilter('maintenance')">
+                                <option value="">All Statuses</option>
+                                <option>Open</option>
+                                <option>In Progress</option>
+                                <option>Completed</option>
+                            </select>
+                            <select class="cream-select-filter" id="maintenancePriorityFilter" onchange="runReportFilter('maintenance')">
+                                <option value="">All Priorities</option>
+                                <option>Critical</option>
+                                <option>High</option>
+                                <option>Medium</option>
+                                <option>Low</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="maintenanceSearchInput" placeholder="Search report..." oninput="runReportFilter('maintenance')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('maintenance')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('maintenance')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('maintenance')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('maintenance')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-maintenance">
+                            <thead>
+                                <tr>
+                                    <th>TICKET ID</th>
+                                    <th>ASSET</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>ISSUE</th>
+                                    <th>PRIORITY</th>
+                                    <th>STATUS</th>
+                                    <th>REPORTED DATE</th>
+                                    <th>TECHNICIAN / VENDOR</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-maintenance">
+                                <tr th:each="m : ${maintenanceRecords}"
+                                    th:data-date="${m.reportedDate}"
+                                    th:data-dept="${m.department}"
+                                    th:data-status="${m.status}"
+                                    th:data-priority="${m.priority}">
+                                    <td><strong th:text="${m.ticketId}">MNT001</strong></td>
+                                    <td><strong th:text="${m.assetName}">Modular Workstation Desk</strong></td>
+                                    <td th:text="${m.department}">IT</td>
+                                    <td th:text="${m.issueDescription}">Motor stuck</td>
+                                    <td><span style="font-weight:700;" th:text="${m.priority}">High</span></td>
+                                    <td><span class="status-badge" th:classappend="${m.statusBadgeClass}" th:text="${m.status}">Open</span></td>
+                                    <td th:text="${m.reportedDate}">08 Oct 2026</td>
+                                    <td th:text="${m.vendorTechnician}">Facility Maintenance</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-maintenance">
+                        <div>Total records: <strong id="total-maintenance" th:text="${maintenanceRecords.size()}">4</strong></div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-maintenance">Showing 1-4 of 4 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('maintenance', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-maintenance"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 8. TAB: VENDOR REPORT                                          -->
+            <!-- ============================================================= -->
+            <div id="tab-vendor" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="vendorStartDate" onchange="runReportFilter('vendor')">
+                            <input type="date" class="cream-date-picker" id="vendorEndDate" onchange="runReportFilter('vendor')">
+                            <select class="cream-select-filter" id="vendorDeptFilter" onchange="runReportFilter('vendor')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                            </select>
+                            <select class="cream-select-filter" id="vendorCatFilter" onchange="runReportFilter('vendor')">
+                                <option value="">All Categories</option>
+                                <option>Hardware</option>
+                                <option>Software</option>
+                                <option>Furniture</option>
+                                <option>Automotive</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="vendorSearchInput" placeholder="Search report..." oninput="runReportFilter('vendor')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('vendor')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('vendor')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('vendor')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('vendor')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-vendor">
+                            <thead>
+                                <tr>
+                                    <th>CODE</th>
+                                    <th>VENDOR NAME</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>CONTACT PERSON</th>
+                                    <th>EMAIL</th>
+                                    <th>PHONE</th>
+                                    <th>CATEGORY</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-vendor">
+                                <tr th:each="v : ${vendors}"
+                                    th:data-dept="${v.department}"
+                                    th:data-cat="${v.category}"
+                                    th:data-status="${v.status}"
+                                    th:data-date="${v.createdDate != null ? v.createdDate : ''}">
+                                    <td><strong th:text="${v.vendorCode}">VND001</strong></td>
+                                    <td><strong th:text="${v.name}">Dell Technologies</strong></td>
+                                    <td th:text="${v.department}">IT</td>
+                                    <td th:text="${v.contactPerson}">Rajesh Sharma</td>
+                                    <td th:text="${v.email}">sales@dell-enterprise.in</td>
+                                    <td th:text="${v.phone}">+91 80 2234 5678</td>
+                                    <td><span class="category-pill" th:text="${v.category}">Hardware</span></td>
+                                    <td><span class="status-badge badge-available" th:text="${v.status}">Active</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-vendor">
+                        <div>Total records: <strong id="total-vendor" th:text="${vendors.size()}">5</strong></div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-vendor">Showing 1-5 of 5 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('vendor', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-vendor"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 9. TAB: DISPOSAL REPORT                                        -->
+            <!-- ============================================================= -->
+            <div id="tab-disposal" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="disposalStartDate" onchange="runReportFilter('disposal')">
+                            <input type="date" class="cream-date-picker" id="disposalEndDate" onchange="runReportFilter('disposal')">
+                            <select class="cream-select-filter" id="disposalDeptFilter" onchange="runReportFilter('disposal')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                            </select>
+                            <select class="cream-select-filter" id="disposalMethodFilter" onchange="runReportFilter('disposal')">
+                                <option value="">All Methods</option>
+                                <option>Auction</option>
+                                <option>Scrap</option>
+                                <option>Donate</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="disposalSearchInput" placeholder="Search report..." oninput="runReportFilter('disposal')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('disposal')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('disposal')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('disposal')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('disposal')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-disposal">
+                            <thead>
+                                <tr>
+                                    <th>DISPOSAL NO.</th>
+                                    <th>DATE</th>
+                                    <th>ASSET</th>
+                                    <th>CATEGORY</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>METHOD</th>
+                                    <th>RECOVERY VALUE</th>
+                                    <th>REMARKS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-disposal">
+                                <tr th:each="d : ${disposals}"
+                                    th:data-date="${d.date}"
+                                    th:data-dept="${d.department}"
+                                    th:data-cat="${d.category}"
+                                    th:data-method="${d.method}">
+                                    <td><strong th:text="${d.disposalNo}">DIS0001</strong></td>
+                                    <td th:text="${d.date}">20 Nov 2023</td>
+                                    <td><strong th:text="${d.assetName}">HP ProBook 450 G5</strong></td>
+                                    <td><span class="category-pill" th:text="${d.category}">Laptop</span></td>
+                                    <td th:text="${d.department}">IT</td>
+                                    <td><span class="status-badge badge-retired" th:text="${d.method}">Auction</span></td>
+                                    <td><strong style="color:#059669;" th:text="${d.disposalValue}">₹8,500</strong></td>
+                                    <td th:text="${d.remarks}">End of 5-year lifecycle</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-disposal">
+                        <div>Total records: <strong id="total-disposal" th:text="${disposals.size()}">3</strong></div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-disposal">Showing 1-3 of 3 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('disposal', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-disposal"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 10. TAB: EXPENSE REPORT                                        -->
+            <!-- ============================================================= -->
+            <div id="tab-expense" class="tab-panel-section">
+                <div class="report-card-container">
+                    <div class="report-filters-bar">
+                        <div class="filters-left-group">
+                            <input type="date" class="cream-date-picker" id="expenseStartDate" onchange="runReportFilter('expense')">
+                            <input type="date" class="cream-date-picker" id="expenseEndDate" onchange="runReportFilter('expense')">
+                            <select class="cream-select-filter" id="expenseDeptFilter" onchange="runReportFilter('expense')">
+                                <option value="">All Departments</option>
+                                <option>IT</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                            </select>
+                            <select class="cream-select-filter" id="expenseCatFilter" onchange="runReportFilter('expense')">
+                                <option value="">All Categories</option>
+                                <option>Repair</option>
+                                <option>Software License</option>
+                                <option>Maintenance</option>
+                                <option>Hardware Upgrade</option>
+                                <option>License</option>
+                                <option>Transport</option>
+                            </select>
+                        </div>
+                        <div class="filters-right-group">
+                            <div class="report-search-input-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="expenseSearchInput" placeholder="Search report..." oninput="runReportFilter('expense')">
+                            </div>
+                            <button type="button" class="btn-report-export" onclick="resetTabFilters('expense')" title="Reset filters">🔄 Reset</button>
+                            <button type="button" class="btn-report-export" onclick="printReportTable('expense')">🖨️ Print</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportPDF('expense')">📄 PDF</button>
+                            <button type="button" class="btn-report-export" onclick="exportReportCSV('expense')">📊 Excel</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="black-report-table" id="table-expense">
+                            <thead>
+                                <tr>
+                                    <th>EXPENSE NO.</th>
+                                    <th>DATE</th>
+                                    <th>CATEGORY</th>
+                                    <th>DEPARTMENT</th>
+                                    <th>PAID TO</th>
+                                    <th>AMOUNT</th>
+                                    <th>PAYMENT MODE</th>
+                                    <th>DESCRIPTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-expense">
+                                <tr th:each="x : ${expenses}"
+                                    th:data-date="${x.date}"
+                                    th:data-dept="${x.department}"
+                                    th:data-cat="${x.category}">
+                                    <td><strong th:text="${x.expenseNo}">EXP0002</strong></td>
+                                    <td th:text="${x.date}">09 Aug 2026</td>
+                                    <td><span class="category-pill" th:text="${x.category}">Repair</span></td>
+                                    <td th:text="${x.department}">HR</td>
+                                    <td th:text="${x.paidTo}">Samsung Service</td>
+                                    <td><strong style="color:#2563eb;" th:text="${x.amount}">₹1,800</strong></td>
+                                    <td th:text="${x.mode}">Cash</td>
+                                    <td th:text="${x.description}">Monitor backlight replacement</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="report-table-footer" id="footer-expense">
+                        <div>Total records: <strong id="total-expense" th:text="${expenses.size()}">2</strong></div>
+                        <div style="display:flex; align-items:center; gap:1.25rem;">
+                            <span id="showing-expense">Showing 1-2 of 2 entries</span>
+                            <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                                <span>Rows per page:</span>
+                                <select class="cream-select-filter" style="padding:0.2rem 0.5rem;" onchange="changePageSize('expense', this.value)">
+                                    <option value="10" selected>10</option>
+                                    <option value="5">5</option>
+                                    <option value="25">25</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
+                            <div class="pagination-cluster" id="pagination-expense"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Real-Time Pagination & Filter Scripts -->
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script>
+        // Pagination state registry per tab
+        const reportPaginationState = {
+            'asset': { page: 1, size: 10 },
+            'employee': { page: 1, size: 10 },
+            'depreciation': { page: 1, size: 10 },
+            'assignment': { page: 1, size: 10 },
+            'return': { page: 1, size: 10 },
+            'transfer': { page: 1, size: 10 },
+            'maintenance': { page: 1, size: 10 },
+            'vendor': { page: 1, size: 10 },
+            'disposal': { page: 1, size: 10 },
+            'expense': { page: 1, size: 10 }
+        };
+
+        let currentActiveTab = 'asset';
+
+        // -------------------------------------------------------------
+        // Tab Switching
+        // -------------------------------------------------------------
+        function switchReportTab(panelId, btn) {
+            document.querySelectorAll('.tab-panel-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.report-tab-btn').forEach(b => b.classList.remove('active'));
+
+            const panel = document.getElementById(panelId);
+            if (panel) {
+                panel.classList.add('active');
+                btn.classList.add('active');
+                currentActiveTab = panelId.replace('tab-', '');
+                renderTablePagination(currentActiveTab);
+            }
+        }
+
+        // Global search input in header
+        function globalActiveReportSearch(q) {
+            const searchInput = document.getElementById(currentActiveTab + 'SearchInput');
+            if (searchInput) {
+                searchInput.value = q;
+            }
+            if (currentActiveTab === 'employee') {
+                runEmployeeReportFilter();
+            } else {
+                runReportFilter(currentActiveTab);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // Employee Tab Filter Engine
+        // -------------------------------------------------------------
+        function handleEmployeeSelectChange(empName) {
+            runEmployeeReportFilter();
+        }
+
+        function runEmployeeReportFilter() {
+            const empName = (document.getElementById('employeeSelectDropdown')?.value || '').toLowerCase().trim();
+            const deptVal = (document.getElementById('employeeDeptFilter')?.value || '').toLowerCase().trim();
+            const term = (document.getElementById('employeeSearchInput')?.value || '').toLowerCase().trim();
+            const startD = document.getElementById('employeeStartDate')?.value || '';
+            const endD = document.getElementById('employeeEndDate')?.value || '';
+
+            const rows = document.querySelectorAll('#tbody-employee tr');
+            let matchedRows = [];
+
+            rows.forEach(r => {
+                const rowEmp = (r.getAttribute('data-employee') || '').toLowerCase().trim();
+                const rowDept = (r.getAttribute('data-dept') || '').toLowerCase().trim();
+                const rowDate = r.getAttribute('data-date') || '';
+                const text = r.textContent.toLowerCase();
+
+                let match = true;
+                if (empName && !rowEmp.includes(empName) && rowEmp !== empName) match = false;
+                if (match && deptVal && !rowDept.includes(deptVal) && rowDept !== deptVal) match = false;
+                if (match && term && !text.includes(term)) match = false;
+                if (match && (startD || endD) && !checkDateInRange(rowDate, startD, endD)) match = false;
+
+                if (match) {
+                    matchedRows.push(r);
+                }
+                r.style.display = 'none'; // Controlled by paginator
+            });
+
+            reportPaginationState['employee'].page = 1;
+            paginateRows('employee', matchedRows);
+        }
+
+        // -------------------------------------------------------------
+        // Generic Tab Filter Engine (Asset, Depreciation, Assignment, Return, Transfer, Maintenance, Vendor, Disposal, Expense)
+        // -------------------------------------------------------------
+        function runReportFilter(tabKey) {
+            const tbody = document.getElementById('tbody-' + tabKey);
+            if (!tbody) return;
+
+            const searchInput = document.getElementById(tabKey + 'SearchInput');
+            const term = (searchInput ? searchInput.value : '').toLowerCase().trim();
+
+            const startInput = document.getElementById(tabKey + 'StartDate');
+            const endInput = document.getElementById(tabKey + 'EndDate');
+            const startD = startInput ? startInput.value : '';
+            const endD = endInput ? endInput.value : '';
+
+            // Dropdown filters per tab
+            const itemFilter = document.getElementById(tabKey + 'ItemFilter') ? document.getElementById(tabKey + 'ItemFilter').value.toLowerCase().trim() : '';
+            const catFilter = document.getElementById(tabKey + 'CatFilter') ? document.getElementById(tabKey + 'CatFilter').value.toLowerCase().trim() : '';
+            const deptFilter = document.getElementById(tabKey + 'DeptFilter') ? document.getElementById(tabKey + 'DeptFilter').value.toLowerCase().trim() : '';
+            const statusFilter = document.getElementById(tabKey + 'StatusFilter') ? document.getElementById(tabKey + 'StatusFilter').value.toLowerCase().trim() : '';
+            const conditionFilter = document.getElementById(tabKey + 'ConditionFilter') ? document.getElementById(tabKey + 'ConditionFilter').value.toLowerCase().trim() : '';
+            const methodFilter = document.getElementById(tabKey + 'MethodFilter') ? document.getElementById(tabKey + 'MethodFilter').value.toLowerCase().trim() : '';
+            const priorityFilter = document.getElementById(tabKey + 'PriorityFilter') ? document.getElementById(tabKey + 'PriorityFilter').value.toLowerCase().trim() : '';
+
+            const rows = tbody.querySelectorAll('tr');
+            let matchedRows = [];
+
+            rows.forEach(r => {
+                const text = r.textContent.toLowerCase();
+                const rItem = (r.getAttribute('data-item') || '').toLowerCase();
+                const rDate = r.getAttribute('data-date') || '';
+                const rCat = (r.getAttribute('data-cat') || '').toLowerCase();
+                const rDept = (r.getAttribute('data-dept') || '').toLowerCase();
+                const rStatus = (r.getAttribute('data-status') || '').toLowerCase();
+                const rCondition = (r.getAttribute('data-condition') || '').toLowerCase();
+                const rMethod = (r.getAttribute('data-method') || '').toLowerCase();
+                const rPriority = (r.getAttribute('data-priority') || '').toLowerCase();
+
+                let match = true;
+                if (term && !text.includes(term)) match = false;
+                if (match && itemFilter && rItem !== itemFilter && !rItem.includes(itemFilter)) match = false;
+                if (match && (startD || endD) && !checkDateInRange(rDate, startD, endD)) match = false;
+                if (match && catFilter && rCat !== catFilter && !rCat.includes(catFilter)) match = false;
+                if (match && deptFilter && rDept !== deptFilter && !rDept.includes(deptFilter)) match = false;
+                if (match && statusFilter && rStatus !== statusFilter && !rStatus.includes(statusFilter)) match = false;
+                if (match && conditionFilter && rCondition !== conditionFilter && !rCondition.includes(conditionFilter)) match = false;
+                if (match && methodFilter && rMethod !== methodFilter && !rMethod.includes(methodFilter)) match = false;
+                if (match && priorityFilter && rPriority !== priorityFilter && !rPriority.includes(priorityFilter)) match = false;
+
+                if (match) {
+                    matchedRows.push(r);
+                }
+                r.style.display = 'none'; // Controlled by paginator
+            });
+
+            reportPaginationState[tabKey].page = 1;
+            paginateRows(tabKey, matchedRows);
+        }
+
+        // Reset all filters in a specific tab
+        function resetTabFilters(tabKey) {
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val;
+            };
+            setVal(tabKey + 'StartDate', '');
+            setVal(tabKey + 'EndDate', '');
+            setVal(tabKey + 'ItemFilter', '');
+            setVal(tabKey + 'CatFilter', '');
+            setVal(tabKey + 'DeptFilter', '');
+            setVal(tabKey + 'StatusFilter', '');
+            setVal(tabKey + 'ConditionFilter', '');
+            setVal(tabKey + 'MethodFilter', '');
+            setVal(tabKey + 'PriorityFilter', '');
+            setVal(tabKey + 'SearchInput', '');
+            if (tabKey === 'employee') {
+                setVal('employeeSelectDropdown', '');
+            }
+            const topSearch = document.getElementById('topHeaderReportSearch');
+            if (topSearch) topSearch.value = '';
+
+            if (tabKey === 'employee') {
+                runEmployeeReportFilter();
+            } else {
+                runReportFilter(tabKey);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // Real-Time Pagination & Rows-Per-Page Engine
+        // -------------------------------------------------------------
+        function paginateRows(tabKey, matchedRows) {
+            const state = reportPaginationState[tabKey];
+            const total = matchedRows.length;
+            const sizeVal = state.size;
+            const pageSize = (sizeVal === 'all') ? (total || 1) : parseInt(sizeVal, 10);
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+            if (state.page > totalPages) state.page = totalPages;
+            if (state.page < 1) state.page = 1;
+
+            const startIdx = (state.page - 1) * pageSize;
+            const endIdx = (sizeVal === 'all') ? total : Math.min(startIdx + pageSize, total);
+
+            // Display visible slice
+            matchedRows.forEach((r, idx) => {
+                if (idx >= startIdx && idx < endIdx) {
+                    r.style.display = '';
+                    const numCol = r.querySelector('.row-num');
+                    if (numCol) numCol.textContent = idx + 1;
+                } else {
+                    r.style.display = 'none';
+                }
+            });
+
+            // Update footer metrics
+            const totalEl = document.getElementById('total-' + tabKey);
+            const showingEl = document.getElementById('showing-' + tabKey);
+            if (totalEl) totalEl.textContent = total;
+            if (showingEl) {
+                if (total === 0) {
+                    showingEl.textContent = 'Showing 0-0 of 0 entries';
+                } else {
+                    showingEl.textContent = `Showing ${startIdx + 1}-${endIdx} of ${total} entries`;
+                }
+            }
+
+            // Render pagination buttons [< Prev] [1] [2] ... [Next >]
+            const paginContainer = document.getElementById('pagination-' + tabKey);
+            if (paginContainer) {
+                if (total === 0 || totalPages <= 1) {
+                    paginContainer.innerHTML = '';
+                    return;
+                }
+
+                let paginHtml = `
+                    <button type="button" class="btn-page-nav" ${state.page <= 1 ? 'disabled' : ''} onclick="goToReportPage('${tabKey}', ${state.page - 1})">&lt; Prev</button>
+                `;
+
+                for (let p = 1; p <= totalPages; p++) {
+                    paginHtml += `
+                        <button type="button" class="btn-page-nav ${state.page === p ? 'active' : ''}" onclick="goToReportPage('${tabKey}', ${p})">${p}</button>
+                    `;
+                }
+
+                paginHtml += `
+                    <button type="button" class="btn-page-nav" ${state.page >= totalPages ? 'disabled' : ''} onclick="goToReportPage('${tabKey}', ${state.page + 1})">Next &gt;</button>
+                `;
+                paginContainer.innerHTML = paginHtml;
+            }
+        }
+
+        function changePageSize(tabKey, newSize) {
+            reportPaginationState[tabKey].size = newSize;
+            reportPaginationState[tabKey].page = 1;
+            if (tabKey === 'employee') {
+                runEmployeeReportFilter();
+            } else {
+                runReportFilter(tabKey);
+            }
+        }
+
+        function goToReportPage(tabKey, pageNum) {
+            reportPaginationState[tabKey].page = pageNum;
+            if (tabKey === 'employee') {
+                runEmployeeReportFilter();
+            } else {
+                runReportFilter(tabKey);
+            }
+        }
+
+        function renderTablePagination(tabKey) {
+            if (tabKey === 'employee') {
+                runEmployeeReportFilter();
+            } else {
+                runReportFilter(tabKey);
+            }
+        }
+
+        // Helper: Robust Date parsing and range checking
+        function parseDateRobust(str) {
+            if (!str) return null;
+            str = str.trim();
+            // DD-MM-YYYY or DD/MM/YYYY
+            const dmy = str.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+            if (dmy) {
+                return new Date(parseInt(dmy[3], 10), parseInt(dmy[2], 10) - 1, parseInt(dmy[1], 10));
+            }
+            // YYYY-MM-DD or YYYY/MM/DD
+            const ymd = str.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+            if (ymd) {
+                return new Date(parseInt(ymd[1], 10), parseInt(ymd[2], 10) - 1, parseInt(ymd[3], 10));
+            }
+            const parsed = new Date(str);
+            if (!isNaN(parsed.getTime())) return parsed;
+            return null;
+        }
+
+        function checkDateInRange(rawDateStr, startISO, endISO) {
+            if (!rawDateStr) return true;
+            const d = parseDateRobust(rawDateStr);
+            if (!d) return true;
+            const rowTime = d.getTime();
+
+            if (startISO) {
+                const s = parseDateRobust(startISO);
+                if (s) {
+                    s.setHours(0, 0, 0, 0);
+                    if (rowTime < s.getTime()) return false;
+                }
+            }
+            if (endISO) {
+                const e = parseDateRobust(endISO);
+                if (e) {
+                    e.setHours(23, 59, 59, 999);
+                    if (rowTime > e.getTime()) return false;
+                }
+            }
+            return true;
+        }
+
+        // -------------------------------------------------------------
+        // Export Actions: Print, PDF, Excel CSV
+        // -------------------------------------------------------------
+        function printReportTable(tabKey) {
+            window.print();
+        }
+
+        function exportReportPDF(tabKey) {
+            window.print();
+        }
+
+        function exportReportCSV(tabKey) {
+            if (window.exportTableToExcel) {
+                window.exportTableToExcel('table-' + tabKey, 'AssetOS_' + tabKey.toUpperCase() + '_Report', false);
+            } else {
+                const table = document.getElementById('table-' + tabKey);
+                if (!table) return;
+
+                let csv = [];
+                const headerRow = [];
+                table.querySelectorAll('thead th').forEach(th => {
+                    headerRow.push('"' + th.innerText.replace(/[\r\n\t]+/g, ' ').replace(/"/g, '""').trim() + '"');
+                });
+                csv.push(headerRow.join(','));
+
+                table.querySelectorAll('tbody tr').forEach(tr => {
+                    if (tr.style.display !== 'none') {
+                        let cols = [];
+                        tr.querySelectorAll('td').forEach(td => {
+                            cols.push('"' + td.innerText.replace(/[\r\n\t]+/g, ' ').replace(/"/g, '""').trim() + '"');
+                        });
+                        csv.push(cols.join(','));
+                    }
+                });
+
+                const blob = new Blob(['\uFEFF' + csv.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `AssetOS_${tabKey.toUpperCase()}_Report_${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                    if (link.parentNode) link.parentNode.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                }, 150);
+            }
+        }
+
+        // Initialize all tabs on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            runEmployeeReportFilter();
+            Object.keys(reportPaginationState).forEach(tab => {
+                if (tab !== 'employee') {
+                    runReportFilter(tab);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

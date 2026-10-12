@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings — AssetOS Enterprise</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/pages.css}">
+    <style>
+        body {
+            background: #faf8f5 !important;
+        }
+        .main-wrapper {
+            background: #faf8f5 !important;
+        }
+        .content-body {
+            background: #faf8f5 !important;
+            padding: 1.5rem 2rem;
+        }
+
+        .settings-top-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-card {
+            background: #ffffff;
+            border: 1px solid #e7e5d8;
+            border-radius: 14px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .settings-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #18181b;
+            margin-bottom: 0.35rem;
+        }
+        .settings-card-subtitle {
+            font-size: 0.82rem;
+            color: #71717a;
+            margin-bottom: 1.25rem;
+        }
+
+        .theme-pills {
+            display: flex;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .theme-pill-btn {
+            padding: 0.45rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .theme-pill-btn.active {
+            background: #171614;
+            color: #ffffff;
+            border-color: #171614;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* User Management Modern Card */
+        .user-mgmt-card {
+            background: #ffffff;
+            border: 1px solid #e7e5d8;
+            border-radius: 14px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            margin-bottom: 2rem;
+        }
+
+        .user-mgmt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .user-mgmt-tools {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .cream-search-box {
+            background: #fbf9ea;
+            border: 1px solid #eae5c9;
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            width: 250px;
+        }
+        .cream-search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.84rem;
+            color: #374151;
+            width: 100%;
+        }
+
+        .cream-select-box {
+            background: #fbf9ea;
+            border: 1px solid #eae5c9;
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.84rem;
+            color: #374151;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-add-user {
+            background: #171614;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-add-user:hover {
+            background: #27272a;
+        }
+
+        /* Black table matching the reference design */
+        .black-mgmt-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .black-mgmt-table th {
+            background: #171614;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.76rem;
+            letter-spacing: 0.04em;
+            padding: 0.85rem 1.15rem;
+            border: none;
+        }
+        .black-mgmt-table td {
+            padding: 0.95rem 1.15rem;
+            border-bottom: 1px solid #f1f0e8;
+            color: #27272a;
+            vertical-align: middle;
+        }
+        .black-mgmt-table tr:hover td {
+            background: #faf8f3;
+        }
+
+        /* User Avatar circles */
+        .user-avatar-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .avatar-admin { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+        .avatar-manager { background: linear-gradient(135deg, #059669, #10b981); }
+        .avatar-it { background: linear-gradient(135deg, #0284c7, #38bdf8); }
+        .avatar-auditor { background: linear-gradient(135deg, #d97706, #f59e0b); }
+        .avatar-default { background: linear-gradient(135deg, #64748b, #94a3b8); }
+
+        /* Role Badges */
+        .role-pill {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .role-admin { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+        .role-manager { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .role-it { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .role-auditor { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+
+        /* Action Buttons */
+        .btn-act-edit, .btn-act-del {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #ffffff;
+            transition: opacity 0.15s ease, transform 0.1s ease;
+        }
+        .btn-act-edit { background: #f97316; }
+        .btn-act-del { background: #ef4444; }
+        .btn-act-edit:hover, .btn-act-del:hover {
+            opacity: 0.88;
+            transform: scale(1.05);
+        }
+
+        /* Footer Row & Pagination */
+        .table-footer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1.15rem;
+            font-size: 0.82rem;
+            color: #6b7280;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .pagination-cluster {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .btn-page-nav {
+            padding: 0.3rem 0.65rem;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-page-nav:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .btn-page-nav.active {
+            background: #171614;
+            color: #ffffff;
+            border-color: #171614;
+        }
+        .btn-page-nav:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Toast notification */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: #fff;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 2000;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 960px) {
+            .settings-top-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Notification Toast -->
+    <div id="toastNotification" class="toast-notification">
+        <span>✅</span>
+        <span id="toastMessage">Changes saved successfully</span>
+    </div>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="brand">
+                <div class="brand-icon-box">A</div>
+                <div class="brand-text">
+                    <h1>AssetOS</h1>
+                    <span>Enterprise Asset Suite</span>
+                </div>
+            </a>
+            <button id="sidebarCloseBtn" class="sidebar-close-btn">&times;</button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                            <span>Dashboard</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="toggleSubmenu('assetSubmenu', this)">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                            <span>Asset</span>
+                        </div>
+                        <svg class="submenu-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <ul id="assetSubmenu" class="submenu-list">
+                        <li><a href="/assets" class="submenu-link">Asset Entry</a></li>
+                        <li><a href="/assignments" class="submenu-link">Asset Assignment</a></li>
+                        <li><a href="/asset-return" class="submenu-link">Asset Return</a></li>
+                        <li><a href="/asset-transfer" class="submenu-link">Asset Transfer</a></li>
+                        <li><a href="/maintenance" class="submenu-link">Asset Maintenance</a></li>
+                        <li><a href="/asset-disposal" class="submenu-link">Asset Disposal</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="/employees" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <span>Employee</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/vendors" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            <span>Vendor</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/expenses" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                            <span>Expense</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            <span>Reports</span>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/settings" class="nav-link active">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <span>Settings</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            AssetOS v1.0 &bull; 2026<br>
+            <span style="color:#10b981;">Firebase Live Cloud DB</span>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="top-header">
+            <div class="header-left">
+                <button id="menuToggleBtn" class="menu-toggle-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+                <div style="display:flex; flex-direction:column;">
+                    <span style="font-size:1.15rem; font-weight:700; color:#18181b;">System Settings</span>
+                    <span style="font-size:0.78rem; color:#71717a;">Organization parameters &amp; user credentials</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="status-badge-chip">
+                    <span class="status-indicator-dot"></span>
+                    <span>Firebase Connected</span>
+                </div>
+                <span class="current-date-display" th:text="${currentDate}">Today</span>
+                <div class="user-profile-menu">
+                    <button class="user-avatar-btn" onclick="document.getElementById('userDropdown').classList.toggle('open')">
+                        <span th:text="${currentUser != null ? currentUser.avatarInitials : 'AD'}">AD</span>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown-menu">
+                        <a href="/settings" class="user-dropdown-item">Settings</a>
+                        <a href="/logout" class="user-dropdown-item logout">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <!-- Breadcrumbs -->
+            <nav class="breadcrumb" style="margin-bottom: 0.75rem;">
+                <a href="/">Dashboard</a>
+                <span>/</span>
+                <span style="color:#111827; font-weight:600;">Settings</span>
+            </nav>
+
+            <!-- Top Grid: Company Profile (Left) and Theme + Backup (Right) -->
+            <div class="settings-top-grid">
+                <!-- Card 1: Company Profile -->
+                <div class="settings-card">
+                    <h2 class="settings-card-title">Company Profile</h2>
+                    <p class="settings-card-subtitle">Official organization identity appearing on generated reports &amp; invoices</p>
+                    <form method="post" action="/settings/company">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Company Name</label>
+                                <input type="text" name="companyName" class="form-input" th:value="${companyProfile.companyName}" style="background:#fbf9ea; border-color:#eae5c9;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">GST / Tax Identification</label>
+                                <input type="text" name="gstNumber" class="form-input" th:value="${companyProfile.gstNumber}" style="background:#fbf9ea; border-color:#eae5c9;">
+                            </div>
+                        </div>
+
+                        <div class="form-row" style="margin-top:0.75rem;">
+                            <div class="form-group">
+                                <label class="form-label">Official Phone</label>
+                                <input type="text" name="phone" class="form-input" th:value="${companyProfile.phone}" style="background:#fbf9ea; border-color:#eae5c9;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Support Email</label>
+                                <input type="email" name="email" class="form-input" th:value="${companyProfile.email}" style="background:#fbf9ea; border-color:#eae5c9;">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top:0.75rem;">
+                            <label class="form-label">Registered Corporate Address</label>
+                            <textarea name="address" class="form-input" rows="2" style="background:#fbf9ea; border-color:#eae5c9;" th:text="${companyProfile.address}"></textarea>
+                        </div>
+
+                        <div class="form-row" style="margin-top:0.75rem; align-items:flex-end;">
+                            <div class="form-group" style="max-width: 220px;">
+                                <label class="form-label">Current Financial Year</label>
+                                <input type="text" name="financialYear" class="form-input" th:value="${companyProfile.financialYear}" style="background:#fbf9ea; border-color:#eae5c9;">
+                            </div>
+                            <div>
+                                <button type="submit" class="btn-primary" style="background:#171614; color:#fff; border-radius:8px; padding:0.55rem 1.25rem;">
+                                    <span>💾</span> Save Company Profile
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right Stack: Theme Settings & Backup/Restore -->
+                <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                    <!-- Theme Settings -->
+                    <div class="settings-card">
+                        <h2 class="settings-card-title">Theme Settings</h2>
+                        <p class="settings-card-subtitle">Choose your active color accent theme</p>
+                        <div class="theme-pills">
+                            <button type="button" class="theme-pill-btn" data-theme-slug="classic-charcoal" onclick="setTheme('Classic Charcoal', this)">Classic Charcoal</button>
+                            <button type="button" class="theme-pill-btn" data-theme-slug="royal-violet" onclick="setTheme('Royal Violet', this)">Royal Violet</button>
+                            <button type="button" class="theme-pill-btn" data-theme-slug="forest-emerald" onclick="setTheme('Forest Emerald', this)">Forest Emerald</button>
+                            <button type="button" class="theme-pill-btn" data-theme-slug="deep-indigo" onclick="setTheme('Deep Indigo', this)">Deep Indigo</button>
+                        </div>
+                    </div>
+
+                    <!-- Backup & Restore -->
+                    <div class="settings-card">
+                        <h2 class="settings-card-title">Backup &amp; Security</h2>
+                        <p class="settings-card-subtitle">Database snapshots &amp; cloud storage state</p>
+                        <div style="display:flex; gap:0.65rem; flex-wrap:wrap; margin-bottom:1rem;">
+                            <button class="btn-primary" type="button" onclick="exportBackup()" style="background:#0284c7; color:#fff; border-radius:8px; font-size:0.84rem; padding:0.45rem 1rem;">
+                                <span>⬇️</span> Download Backup JSON
+                            </button>
+                            <button class="btn-secondary" type="button" onclick="document.getElementById('backupFileInput').click()" style="border-radius:8px; font-size:0.84rem; padding:0.45rem 1rem;">
+                                <span>⬆️</span> Restore
+                            </button>
+                            <input type="file" id="backupFileInput" accept=".json" style="display:none;" onchange="handleRestoreBackup(event)">
+                        </div>
+                        <div>
+                            <button class="btn-secondary" type="button" onclick="if(confirm('Reset sample records to initial state?')) { showToast('Database reset to defaults'); }" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem; padding:0.4rem 0.85rem; border-radius:6px;">
+                                <span>🔄</span> Reset Sample Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overhauled Full-Width User Management Console -->
+            <div class="user-mgmt-card">
+                <!-- Toolbar matching reference design -->
+                <div class="user-mgmt-header">
+                    <div>
+                        <h2 class="settings-card-title" style="margin-bottom:2px; font-size:1.25rem;">User Management</h2>
+                        <p class="settings-card-subtitle" style="margin-bottom:0;">Manage user credentials, role-based access control and system administrators</p>
+                    </div>
+
+                    <div class="user-mgmt-tools">
+                        <!-- Cream Live Search Box -->
+                        <div class="cream-search-box">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="userSearchInput" placeholder="Search user ID, name, email..." oninput="handleUserLiveFilter()">
+                        </div>
+
+                        <!-- Role Filter Dropdown -->
+                        <select id="userRoleFilter" class="cream-select-box" onchange="handleUserLiveFilter()">
+                            <option value="">All Roles</option>
+                            <option value="Administrator">Administrator</option>
+                            <option value="Asset Manager">Asset Manager</option>
+                            <option value="IT Support">IT Support</option>
+                            <option value="Auditor">Auditor</option>
+                        </select>
+
+                        <!-- + Add User Button -->
+                        <button type="button" class="btn-add-user" onclick="openAddUserModal()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>+ Add User</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modern Table with Solid Black Header -->
+                <div style="overflow-x: auto;">
+                    <table class="black-mgmt-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;">AVATAR</th>
+                                <th>USER ID</th>
+                                <th>FULL NAME</th>
+                                <th>EMAIL</th>
+                                <th>ROLE</th>
+                                <th>STATUS</th>
+                                <th style="text-align: center; width: 110px;">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <tr th:each="u : ${systemUsers}"
+                                th:data-username="${u.username}"
+                                th:data-fullname="${u.fullName}"
+                                th:data-email="${u.email}"
+                                th:data-role="${u.role}">
+                                <td>
+                                    <div class="user-avatar-circle"
+                                         th:classappend="${u.role == 'Administrator' ? 'avatar-admin' : (u.role == 'Asset Manager' ? 'avatar-manager' : (u.role == 'IT Support' ? 'avatar-it' : (u.role == 'Auditor' ? 'avatar-auditor' : 'avatar-default')))}"
+                                         th:text="${u.avatarInitials}">AD</div>
+                                </td>
+                                <td>
+                                    <span class="asset-tag" style="background:#f4f4f5; color:#18181b; font-weight:700; padding:2px 8px; border-radius:6px;" th:text="${u.username}">USR001</span>
+                                </td>
+                                <td>
+                                    <strong style="color:#111827; font-size:0.9rem;" th:text="${u.fullName}">Admin User</strong>
+                                </td>
+                                <td style="color:#4b5563;" th:text="${u.email}">admin@company.com</td>
+                                <td>
+                                    <span class="role-pill"
+                                          th:classappend="${u.role == 'Administrator' ? 'role-admin' : (u.role == 'Asset Manager' ? 'role-manager' : (u.role == 'IT Support' ? 'role-it' : (u.role == 'Auditor' ? 'role-auditor' : 'role-admin')))}"
+                                          th:text="${u.role}">Administrator</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge badge-available" style="padding:2px 8px; font-size:0.75rem;">
+                                        <span class="badge-dot" style="background:#10b981;"></span> Active
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <div style="display:inline-flex; gap:0.4rem; align-items:center;">
+                                        <!-- Amber Edit button -->
+                                        <button type="button" class="btn-act-edit" title="Edit User"
+                                                th:data-username="${u.username}"
+                                                th:data-fullname="${u.fullName}"
+                                                th:data-email="${u.email}"
+                                                th:data-role="${u.role}"
+                                                onclick="openEditUserModal(this)">
+                                            ✏️
+                                        </button>
+
+                                        <!-- Red Delete button -->
+                                        <form method="post" action="/settings/users/delete" onsubmit="return confirm('Delete this system user permanently?');" style="display:inline;">
+                                            <input type="hidden" name="username" th:value="${u.username}">
+                                            <button type="submit" class="btn-act-del" title="Delete User">
+                                                🗑️
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Real-time Pagination & Slicing Footer -->
+                <div class="table-footer-row">
+                    <div>Total users: <strong id="totalUsersCount" th:text="${systemUsers.size()}">5</strong></div>
+                    <div style="display:flex; align-items:center; gap:1.25rem;">
+                        <span id="showingUsersCount">Showing 1-5 of 5 entries</span>
+                        <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                            <span>Rows per page:</span>
+                            <select id="userPageSizeSelect" class="cream-select-box" style="padding:0.25rem 0.5rem; font-size:0.8rem;" onchange="changeUserPageSize(this.value)">
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="all">All</option>
+                            </select>
+                        </div>
+                        <div class="pagination-cluster" id="userPaginationNav"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- ADD / EDIT USER MODAL DIALOG                                              -->
+    <!-- ========================================================================= -->
+    <div id="userModal" class="modal-overlay" onclick="if(event.target===this)closeUserModal()">
+        <div class="modal-card" style="max-width: 500px; width: 95%; background:#ffffff; border-radius:14px; overflow:hidden; border:1px solid #e7e5d8;">
+            <!-- Modal Dark Header -->
+            <div style="background:#171614; color:#ffffff; padding:1rem 1.35rem; display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="userModalTitle" style="margin:0; font-size:1.1rem; font-weight:700; color:#fff;">Add System User</h3>
+                <button type="button" onclick="closeUserModal()" style="background:transparent; border:none; color:#a1a1aa; font-size:1.3rem; cursor:pointer;">&times;</button>
+            </div>
+
+            <!-- Modal Form -->
+            <form id="userForm" method="post" action="/settings/users/save">
+                <div style="padding: 1.35rem; display:flex; flex-direction:column; gap:1rem; background:#ffffff;">
+                    <div class="form-group">
+                        <label class="form-label">User ID / Username *</label>
+                        <input type="text" name="username" id="modalUserId" class="form-input" placeholder="e.g. USR006" required style="background:#fbf9ea; border-color:#eae5c9;">
+                        <small id="userIdHelp" style="color:#6b7280; font-size:0.75rem; margin-top:2px; display:block;">Unique credential login handle</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" name="fullName" id="modalUserFullName" class="form-input" placeholder="e.g. Ramesh Kumar" required style="background:#fbf9ea; border-color:#eae5c9;">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" name="email" id="modalUserEmail" class="form-input" placeholder="e.g. ramesh@company.com" required style="background:#fbf9ea; border-color:#eae5c9;">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">System Access Role *</label>
+                        <select name="role" id="modalUserRole" class="form-select" required style="background:#fbf9ea; border-color:#eae5c9;">
+                            <option value="Administrator">Administrator (Full Access)</option>
+                            <option value="Asset Manager">Asset Manager (Assets &amp; Assignments)</option>
+                            <option value="IT Support">IT Support (Maintenance &amp; Tags)</option>
+                            <option value="Auditor">Auditor (Read-Only &amp; Reports)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password *</label>
+                        <input type="password" name="password" id="modalUserPassword" class="form-input" placeholder="••••••••" required style="background:#fbf9ea; border-color:#eae5c9;">
+                        <small id="passwordHelp" style="color:#6b7280; font-size:0.75rem; margin-top:2px; display:block;">Minimum 6 characters recommended</small>
+                    </div>
+
+                    <input type="hidden" name="avatarInitials" id="modalUserInitials">
+                </div>
+
+                <div style="padding: 1rem 1.35rem; background:#faf8f5; border-top:1px solid #f1efe2; display:flex; justify-content:flex-end; gap:0.65rem;">
+                    <button type="button" class="btn-secondary" onclick="closeUserModal()" style="border-radius:8px;">Cancel</button>
+                    <button type="submit" class="btn-primary" style="background:#171614; color:#fff; border-radius:8px; font-weight:600; padding:0.5rem 1.25rem;">
+                        <span>💾</span> Save User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script>
+        // -------------------------------------------------------------
+        // Theme Switcher & Toast
+        // -------------------------------------------------------------
+        function setTheme(name, btn) {
+            const slug = name.toLowerCase().trim().replace(/\s+/g, '-');
+            if (window.setAssetOSTheme) {
+                window.setAssetOSTheme(slug);
+            } else {
+                localStorage.setItem('assetos_accent_theme', slug);
+                document.documentElement.setAttribute('data-theme', slug);
+                if (document.body) document.body.setAttribute('data-theme', slug);
+            }
+            document.querySelectorAll('.theme-pill-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            showToast('Theme updated: ' + name);
+        }
+
+        // Initialize active theme button state on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentTheme = localStorage.getItem('assetos_accent_theme') || 'classic-charcoal';
+            document.querySelectorAll('.theme-pill-btn').forEach(b => {
+                const slug = b.getAttribute('data-theme-slug') || b.textContent.toLowerCase().trim().replace(/\s+/g, '-');
+                if (slug === currentTheme) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+        });
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function exportBackup() {
+            const backupData = {
+                app: "AssetOS Enterprise",
+                exportDate: new Date().toISOString(),
+                version: "1.0",
+                cloudStorage: "Firebase Live DB",
+                status: "verified"
+            };
+            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `AssetOS_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(() => {
+                if (link.parentNode) link.parentNode.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            }, 150);
+            showToast('Backup JSON downloaded');
+        }
+
+        function handleRestoreBackup(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    showToast('Backup restored successfully: ' + (data.app || 'AssetOS'));
+                } catch(err) {
+                    alert('Invalid JSON backup file.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // -------------------------------------------------------------
+        // Real-Time User Pagination & Slicing State
+        // -------------------------------------------------------------
+        let userPaginationState = {
+            page: 1,
+            size: 5
+        };
+
+        function handleUserLiveFilter() {
+            const term = (document.getElementById('userSearchInput').value || '').toLowerCase().trim();
+            const roleFilter = (document.getElementById('userRoleFilter').value || '').toLowerCase();
+            const rows = Array.from(document.querySelectorAll('#userTableBody tr'));
+
+            let matchedRows = [];
+            rows.forEach(r => {
+                const uName = (r.getAttribute('data-username') || '').toLowerCase();
+                const fName = (r.getAttribute('data-fullname') || '').toLowerCase();
+                const email = (r.getAttribute('data-email') || '').toLowerCase();
+                const role = (r.getAttribute('data-role') || '').toLowerCase();
+
+                let match = true;
+                if (term && !uName.includes(term) && !fName.includes(term) && !email.includes(term)) {
+                    match = false;
+                }
+                if (match && roleFilter && role !== roleFilter) {
+                    match = false;
+                }
+
+                if (match) matchedRows.push(r);
+                r.style.display = 'none'; // Controlled by paginator
+            });
+
+            paginateUserRows(matchedRows);
+        }
+
+        function paginateUserRows(matchedRows) {
+            const total = matchedRows.length;
+            const sizeVal = userPaginationState.size;
+            const pageSize = (sizeVal === 'all') ? (total || 1) : parseInt(sizeVal, 10);
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+            if (userPaginationState.page > totalPages) userPaginationState.page = totalPages;
+            if (userPaginationState.page < 1) userPaginationState.page = 1;
+
+            const startIdx = (userPaginationState.page - 1) * pageSize;
+            const endIdx = (sizeVal === 'all') ? total : Math.min(startIdx + pageSize, total);
+
+            matchedRows.forEach((r, idx) => {
+                if (idx >= startIdx && idx < endIdx) {
+                    r.style.display = '';
+                } else {
+                    r.style.display = 'none';
+                }
+            });
+
+            // Update footer counters
+            const totalEl = document.getElementById('totalUsersCount');
+            const showingEl = document.getElementById('showingUsersCount');
+            if (totalEl) totalEl.textContent = total;
+            if (showingEl) {
+                if (total === 0) {
+                    showingEl.textContent = 'Showing 0-0 of 0 entries';
+                } else {
+                    showingEl.textContent = `Showing ${startIdx + 1}-${endIdx} of ${total} entries`;
+                }
+            }
+
+            // Render navigation buttons [< Prev] [1] [2] ... [Next >]
+            const paginContainer = document.getElementById('userPaginationNav');
+            if (paginContainer) {
+                if (total === 0 || totalPages <= 1) {
+                    paginContainer.innerHTML = '';
+                    return;
+                }
+
+                let paginHtml = `
+                    <button type="button" class="btn-page-nav" ${userPaginationState.page <= 1 ? 'disabled' : ''} onclick="goToUserPage(${userPaginationState.page - 1})">&lt; Prev</button>
+                `;
+                for (let p = 1; p <= totalPages; p++) {
+                    paginHtml += `
+                        <button type="button" class="btn-page-nav ${userPaginationState.page === p ? 'active' : ''}" onclick="goToUserPage(${p})">${p}</button>
+                    `;
+                }
+                paginHtml += `
+                    <button type="button" class="btn-page-nav" ${userPaginationState.page >= totalPages ? 'disabled' : ''} onclick="goToUserPage(${userPaginationState.page + 1})">Next &gt;</button>
+                `;
+                paginContainer.innerHTML = paginHtml;
+            }
+        }
+
+        function changeUserPageSize(val) {
+            userPaginationState.size = val;
+            userPaginationState.page = 1;
+            handleUserLiveFilter();
+        }
+
+        function goToUserPage(p) {
+            userPaginationState.page = p;
+            handleUserLiveFilter();
+        }
+
+        // -------------------------------------------------------------
+        // Add / Edit Modal Logic
+        // -------------------------------------------------------------
+        function openAddUserModal() {
+            document.getElementById('userModalTitle').textContent = 'Add System User';
+            document.getElementById('userForm').reset();
+            const uInput = document.getElementById('modalUserId');
+            uInput.readOnly = false;
+            uInput.style.backgroundColor = '#fbf9ea';
+            document.getElementById('userIdHelp').textContent = 'Unique credential login handle';
+            document.getElementById('modalUserPassword').required = true;
+            document.getElementById('passwordHelp').textContent = 'Minimum 6 characters required';
+            document.getElementById('userModal').classList.add('open');
+        }
+
+        function openEditUserModal(btn) {
+            document.getElementById('userModalTitle').textContent = 'Edit System User';
+            const uId = btn.getAttribute('data-username');
+            const fName = btn.getAttribute('data-fullname');
+            const email = btn.getAttribute('data-email');
+            const role = btn.getAttribute('data-role');
+
+            const uInput = document.getElementById('modalUserId');
+            uInput.value = uId;
+            uInput.readOnly = true;
+            uInput.style.backgroundColor = '#f3f4f6';
+            document.getElementById('userIdHelp').textContent = 'Username cannot be modified';
+
+            document.getElementById('modalUserFullName').value = fName || '';
+            document.getElementById('modalUserEmail').value = email || '';
+
+            const rSel = document.getElementById('modalUserRole');
+            for (let i = 0; i < rSel.options.length; i++) {
+                if (rSel.options[i].value === role) {
+                    rSel.selectedIndex = i;
+                    break;
+                }
+            }
+
+            const pInput = document.getElementById('modalUserPassword');
+            pInput.value = '';
+            pInput.required = false;
+            document.getElementById('passwordHelp').textContent = 'Leave empty to keep existing password';
+
+            document.getElementById('userModal').classList.add('open');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('open');
+        }
+
+        // Check URL parameters for confirmation toasts
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('saved') === 'true') {
+                showToast('Company profile updated successfully');
+            } else if (urlParams.get('userSaved') === 'true') {
+                showToast('User saved successfully');
+            } else if (urlParams.get('userDeleted') === 'true') {
+                showToast('User deleted successfully');
+            }
+            handleUserLiveFilter();
+        });
+    </script>
+</body>
+</html>

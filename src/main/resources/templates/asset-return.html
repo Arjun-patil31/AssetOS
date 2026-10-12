@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Return — AssetOS Enterprise</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/pages.css}">
+    <style>
+        /* Card Container & Styling matching Image 2 */
+        .return-page-card {
+            background: #ffffff;
+            border: 1px solid #ebe7cf;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            margin-top: 1.25rem;
+            overflow: hidden;
+        }
+
+        .return-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: #ffffff;
+            border-bottom: 1px solid #f1efe2;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-new-return {
+            background: #23221e;
+            color: #ffffff;
+            border: none;
+            padding: 0.52rem 1.15rem;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.15s ease;
+        }
+        .btn-new-return:hover {
+            background: #383630;
+            transform: translateY(-1px);
+        }
+
+        .return-search-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fbf9ea;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
+            width: 260px;
+            transition: border-color 0.15s;
+        }
+        .return-search-box:focus-within {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+        }
+        .return-search-box input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.84rem;
+            color: #1f2937;
+            width: 100%;
+        }
+
+        .btn-export-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #ffffff;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            padding: 0.46rem 0.9rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-export-pill:hover {
+            background: #fbf9ea;
+            border-color: #d6d0ae;
+        }
+
+        /* Black Table Header matching Image 2 */
+        .black-return-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .black-return-table th {
+            background: #23221e;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.76rem;
+            letter-spacing: 0.04em;
+            padding: 0.85rem 1.1rem;
+            border: none;
+        }
+        .black-return-table td {
+            padding: 0.95rem 1.1rem;
+            border-bottom: 1px solid #f1efe2;
+            color: #1f2937;
+            vertical-align: middle;
+        }
+        .black-return-table tbody tr:hover {
+            background: #faf8ed;
+        }
+
+        /* Action Buttons */
+        .btn-action-edit {
+            background: #f59e0b;
+            color: #ffffff;
+            border: none;
+            padding: 0.38rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(245, 158, 11, 0.2);
+        }
+        .btn-action-edit:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        .btn-action-delete {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 0.38rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(239, 68, 68, 0.2);
+        }
+        .btn-action-delete:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        /* Modal Dialog matching Image 3 */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(17, 24, 39, 0.65);
+            backdrop-filter: blur(2px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-dialog-box {
+            background: #ffffff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 680px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.97) translateY(-8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-dark-header {
+            background: #23221e;
+            color: #ffffff;
+            padding: 1rem 1.35rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-dark-header h3 {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        .modal-close-btn-x {
+            background: transparent;
+            border: none;
+            color: #d1d5db;
+            font-size: 1.25rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.25rem;
+            border-radius: 4px;
+        }
+        .modal-close-btn-x:hover {
+            color: #ffffff;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .modal-form-content {
+            padding: 1.25rem 1.35rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            background: #ffffff;
+        }
+
+        .cream-form-input, .cream-form-select, .cream-form-textarea {
+            width: 100%;
+            background: #fbf9ea;
+            border: 1.5px solid #ebe7cf;
+            border-radius: 8px;
+            padding: 0.55rem 0.8rem;
+            font-size: 0.85rem;
+            color: #1f2937;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.15s;
+            box-sizing: border-box;
+        }
+        .cream-form-input:focus, .cream-form-select:focus, .cream-form-textarea:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+        }
+
+        .form-label-styled {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 0.35rem;
+        }
+
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.85rem;
+        }
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+        }
+        @media(max-width: 640px) {
+            .form-grid-3, .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Asset Cards Grid in Modal (Image 3) */
+        .asset-card-select-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+            gap: 0.75rem;
+            max-height: 180px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: #faf8ed;
+            border: 1px solid #ebe7cf;
+            border-radius: 8px;
+        }
+        .asset-select-card {
+            background: #ffffff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .asset-select-card:hover {
+            border-color: #f59e0b;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+        }
+        .asset-select-card.selected {
+            border-color: #f59e0b;
+            background: #fefce8;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+        }
+        .asset-card-img-placeholder {
+            height: 60px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            overflow: hidden;
+        }
+        .asset-card-img-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .asset-card-info-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #111827;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .asset-card-info-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+        }
+        .asset-card-tag-badge {
+            color: #6b7280;
+            font-family: ui-monospace, monospace;
+            font-weight: 600;
+        }
+        .asset-card-cond-badge {
+            background: #ecfdf5;
+            color: #059669;
+            font-weight: 600;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .modal-footer-styled {
+            padding: 0.85rem 1.35rem;
+            background: #ffffff;
+            border-top: 1px solid #f1efe2;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.65rem;
+        }
+        .btn-modal-cancel {
+            background: #ffffff;
+            border: 1.5px solid #ebe7cf;
+            color: #4b5563;
+            font-size: 0.84rem;
+            font-weight: 600;
+            padding: 0.52rem 1.15rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-modal-cancel:hover {
+            background: #fbf9ea;
+        }
+        .btn-modal-save {
+            background: #23221e;
+            color: #ffffff;
+            border: none;
+            font-size: 0.84rem;
+            font-weight: 600;
+            padding: 0.52rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.15s ease;
+        }
+        .pagination-cluster {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .btn-page-nav {
+            padding: 0.25rem 0.6rem;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-page-nav:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .btn-page-nav.active {
+            background: #23221e;
+            color: #ffffff;
+            border-color: #23221e;
+        }
+        .btn-page-nav:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <!-- Sidebar Navigation matching Image 2 -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">AssetOS</span>
+                    <span class="brand-tag">Enterprise Asset Suite</span>
+                </div>
+            </a>
+            <button id="sidebarCloseBtn" class="sidebar-close-btn" aria-label="Close Sidebar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <!-- 1. Dashboard -->
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                            <span>Dashboard</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 2. Assets (Accordion Active) -->
+                <li class="nav-item has-submenu open">
+                    <a href="/assets" class="nav-link active">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                            <span>Asset</span>
+                        </div>
+                        <svg class="submenu-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <ul class="submenu-list">
+                        <li><a href="/assets" class="submenu-link">Asset Entry</a></li>
+                        <li><a href="/assignments" class="submenu-link">Asset Assignment</a></li>
+                        <li><a href="/asset-return" class="submenu-link active">Asset Return</a></li>
+                        <li><a href="/asset-transfer" class="submenu-link">Asset Transfer</a></li>
+                        <li><a href="/maintenance" class="submenu-link">Asset Maintenance</a></li>
+                        <li><a href="/asset-disposal" class="submenu-link">Asset Disposal</a></li>
+                    </ul>
+                </li>
+
+                <!-- 3. Employee -->
+                <li class="nav-item">
+                    <a href="/employees" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <span>Employee</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 4. Vendor -->
+                <li class="nav-item">
+                    <a href="/vendors" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            <span>Vendor</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 5. Expense -->
+                <li class="nav-item">
+                    <a href="/expenses" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            <span>Expense</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 6. Reports -->
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            <span>Reports</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 7. Settings -->
+                <li class="nav-item">
+                    <a href="/settings" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <span>Settings</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            AssetOS v1.0 &bull; 2026 &bull; <span style="color:#10b981;">Firebase Live Cloud DB</span>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <!-- Top Navigation Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button id="menuToggleBtn" class="menu-toggle-btn" aria-label="Toggle Menu">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <div style="display:flex; flex-direction:column;">
+                    <span style="font-size: 1.15rem; font-weight: 700; color: #111827;">Asset Return</span>
+                    <span style="font-size: 0.78rem; color: #6b7280;">Process asset returns</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <!-- Live DB Status Chip -->
+                <div class="status-badge-chip">
+                    <span class="status-indicator-dot"></span>
+                    <span>Firebase Connected</span>
+                </div>
+
+                <!-- Universal Cream Search Input -->
+                <div class="cream-search-box" style="min-width: 260px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="topHeaderSearch" placeholder="Quick search assets, employee..." oninput="handleTableLiveFilter(this.value)">
+                </div>
+
+                <!-- Notification Bell -->
+                <button class="header-action-icon-btn" aria-label="Notifications" onclick="window.location.href='/'">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span class="notification-badge">4</span>
+                </button>
+
+                <!-- Theme Toggle Button -->
+                <button class="header-action-icon-btn" id="themeToggleBtn" aria-label="Toggle Dark Mode">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+
+                <!-- User Profile Menu -->
+                <div class="user-profile-menu">
+                    <button id="userProfileBtn" class="user-avatar-btn" aria-label="User Profile" onclick="document.getElementById('userDropdown').classList.toggle('show')">
+                        <span th:text="${currentUser != null ? currentUser.avatarInitials : 'AD'}">AD</span>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown-menu">
+                        <div class="user-dropdown-header">
+                            <strong th:text="${currentUser != null ? currentUser.fullName : 'System Administrator'}">Administrator</strong>
+                            <small th:text="${currentUser != null ? currentUser.email : 'admin@assetos.local'}">admin@assetos.local</small>
+                        </div>
+                        <a href="/settings" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/logout" class="dropdown-item logout">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Body -->
+        <main class="content-body" style="padding: 1.5rem 2rem;">
+            <!-- Breadcrumbs Navigation -->
+            <nav class="breadcrumb" style="margin-bottom: 0.5rem;">
+                <a href="/">Dashboard</a>
+                <span>/</span>
+                <a href="/assets">Asset</a>
+                <span>/</span>
+                <span style="color:#111827; font-weight:600;">Asset Return</span>
+            </nav>
+
+            <!-- Card Container matching Image 2 -->
+            <div class="return-page-card">
+                <!-- Toolbar: + New, Search, PDF, Excel -->
+                <div class="return-toolbar">
+                    <div class="toolbar-left">
+                        <button type="button" class="btn-new-return" onclick="openNewReturnModal()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>+ New</span>
+                        </button>
+                        <div class="return-search-box">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="returnSearchInput" placeholder="Search..." oninput="handleTableLiveFilter(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="toolbar-right">
+                        <button type="button" class="btn-export-pill" onclick="exportToPDF()">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <span>PDF</span>
+                        </button>
+                        <button type="button" class="btn-export-pill" onclick="exportToExcel()">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="17"></line><line x1="16" y1="13" x2="8" y2="17"></line></svg>
+                            <span>Excel</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Black Header Return Table matching Image 2 -->
+                <div class="table-responsive">
+                    <table class="black-return-table" id="assetReturnTable">
+                        <thead>
+                            <tr>
+                                <th>RETURN NO.</th>
+                                <th>DATE</th>
+                                <th>EMPLOYEE</th>
+                                <th>ASSET</th>
+                                <th>CONDITION</th>
+                                <th>DAMAGE</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="returnTableBody">
+                            <tr th:each="r : ${returns}">
+                                <td><strong th:text="${r.returnNo}">RET0006</strong></td>
+                                <td th:text="${r.date}">09 Aug 2026</td>
+                                <td><strong th:text="${r.returnedBy}">Anisur Rahman</strong></td>
+                                <td th:text="${r.assetName}">Cisco Catalyst 24-Port Switch</td>
+                                <td>
+                                    <span style="background:#ecfdf5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;" th:text="${r.condition}">Good</span>
+                                </td>
+                                <td>
+                                    <span th:text="${r.damageStatus != null ? r.damageStatus : 'No Damage'}">No Damage</span>
+                                </td>
+                                <td>
+                                    <div style="display:flex; align-items:center; gap:0.4rem;">
+                                        <!-- Amber Edit button -->
+                                        <button type="button" class="btn-action-edit"
+                                                th:data-no="${r.returnNo}"
+                                                th:data-date="${r.date}"
+                                                th:data-employee="${r.returnedBy}"
+                                                th:data-asset="${r.assetName}"
+                                                th:data-tag="${r.assetTag}"
+                                                th:data-cond="${r.condition}"
+                                                th:data-damage="${r.damageStatus}"
+                                                th:data-remarks="${r.remarks}"
+                                                onclick="openEditReturnModal(this)" title="Edit Return">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                        </button>
+
+                                        <!-- Red Delete button -->
+                                        <form th:action="@{/asset-return/delete}" method="post" style="display:inline;" onsubmit="return confirm('Delete this asset return record?')">
+                                            <input type="hidden" name="returnNo" th:value="${r.returnNo}">
+                                            <button type="submit" class="btn-action-delete" title="Delete Return">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${returns.isEmpty()}" id="noReturnsRow">
+                                <td colspan="7" style="text-align:center; color:#9ca3af; padding:2.5rem;">
+                                    No asset returns found. Click "+ New" to process a return.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Footer matching Image 2 with Real-Time Pagination -->
+                <div style="display:flex; justify-content:space-between; align-items:center; padding: 0.9rem 1.25rem; background:#ffffff; font-size:0.82rem; color:#6b7280; border-top:1px solid #f1efe2; flex-wrap:wrap; gap:0.5rem;">
+                    <div>Total: <strong id="totalCountDisplay" th:text="${returns.size()}">4</strong></div>
+                    <div style="display:flex; align-items:center; gap:1.25rem;">
+                        <span id="showingCountDisplay" th:text="'Showing 1-' + ${returns.size()} + ' of ' + ${returns.size()} + ' entries'">Showing 1-4 of 4 entries</span>
+                        <div style="display:inline-flex; align-items:center; gap:0.4rem;">
+                            <span>Rows per page:</span>
+                            <select id="returnPageSizeSelect" class="form-control" style="width: auto; padding: 0.2rem 0.5rem; font-size:0.8rem; background:#fbf9ea; border:1px solid #ebe7cf; border-radius:6px; cursor:pointer;" onchange="changeReturnPageSize(this.value)">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="all">All</option>
+                            </select>
+                        </div>
+                        <div class="pagination-cluster" id="returnPaginationNav"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- NEW / EDIT ASSET RETURN MODAL DIALOG (Matching Image 3)                    -->
+    <!-- ========================================================================= -->
+    <div id="returnModal" class="modal-overlay" onclick="if(event.target===this)closeReturnModal()">
+        <div class="modal-dialog-box" role="dialog" aria-modal="true" aria-labelledby="modalHeading">
+            <!-- Modal Header matching Image 3 -->
+            <div class="modal-dark-header">
+                <h3 id="modalHeading">New Asset Return</h3>
+                <button type="button" class="modal-close-btn-x" onclick="closeReturnModal()" aria-label="Close">&times;</button>
+            </div>
+
+            <!-- Modal Form matching Image 3 -->
+            <form id="returnForm" th:action="@{/asset-return/save}" method="post">
+                <div class="modal-form-content">
+                    <!-- Row 1: Return No, Return Date, Employee * -->
+                    <div class="form-grid-3">
+                        <div>
+                            <label class="form-label-styled">Return No.</label>
+                            <input type="text" id="modalReturnNo" name="returnNo" value="(auto generated)" class="cream-form-input" readonly style="color:#6b7280; cursor:not-allowed;">
+                        </div>
+                        <div>
+                            <label class="form-label-styled">Return Date *</label>
+                            <input type="date" id="modalReturnDate" name="date" class="cream-form-input" required>
+                        </div>
+                        <div>
+                            <label class="form-label-styled">Employee *</label>
+                            <select id="modalEmployeeSelect" name="returnedBy" class="cream-form-select" required onchange="handleModalEmployeeChange(this)">
+                                <option value="">— Select Employee —</option>
+                                <option th:each="emp : ${employees}"
+                                        th:value="${emp.fullName}"
+                                        th:text="${emp.employeeId + ' — ' + emp.fullName}"
+                                        th:data-id="${emp.employeeId}"
+                                        th:data-dept="${emp.department}">EMP0012 — Jamil Hossain</option>
+                            </select>
+                            <input type="hidden" id="modalEmployeeId" name="employeeId">
+                            <input type="hidden" id="modalDepartment" name="department">
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Select Asset * with Search & Visual Cards (Image 3) -->
+                    <div>
+                        <label class="form-label-styled">Select Asset *</label>
+                        <!-- Search assets by name, ID, brand or category -->
+                        <input type="text" id="modalAssetFilterInput"
+                               placeholder="Search assets by name, ID, brand or category..."
+                               class="cream-form-input"
+                               style="margin-bottom: 0.65rem;"
+                               oninput="filterModalAssetCards(this.value)">
+
+                        <!-- Real-time Asset Cards Grid (matching Image 3) -->
+                        <div id="modalAssetCardsContainer" class="asset-card-select-grid">
+                            <div th:each="ast : ${assets}"
+                                 class="asset-select-card"
+                                 th:data-tag="${ast.assetTag}"
+                                 th:data-name="${ast.name}"
+                                 th:data-cat="${ast.category}"
+                                 th:data-cond="${ast.condition}"
+                                 th:data-assigned="${ast.assignedTo}"
+                                 onclick="selectModalAssetCard(this)">
+                                <div class="asset-card-img-placeholder">
+                                    <span th:if="${ast.category == 'Laptop'}">💻</span>
+                                    <span th:if="${ast.category == 'Mobile'}">📱</span>
+                                    <span th:if="${ast.category == 'Networking'}">🌐</span>
+                                    <span th:if="${ast.category == 'Desktop'}">🖥️</span>
+                                    <span th:if="${ast.category == 'Peripheral'}">⌨️</span>
+                                    <span th:if="${ast.category == 'Printer'}">🖨️</span>
+                                    <span th:if="${ast.category == 'Furniture'}">🪑</span>
+                                    <span th:if="${ast.category == 'Vehicle'}">🚗</span>
+                                </div>
+                                <div class="asset-card-info-title" th:text="${ast.name}">Apple MacBook Pro</div>
+                                <div class="asset-card-info-meta">
+                                    <span class="asset-card-tag-badge" th:text="${ast.assetTag}">AST0004</span>
+                                    <span class="asset-card-cond-badge" th:text="${ast.condition != null ? ast.condition : 'Good'}">New</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dropdown fallback / sync (Image 3: Search asset..) -->
+                        <select id="modalAssetDropdown" name="assetTag" class="cream-form-select" style="margin-top: 0.65rem;" required onchange="handleModalAssetDropdownChange(this)">
+                            <option value="">Search asset..</option>
+                            <option th:each="ast : ${assets}"
+                                    th:value="${ast.assetTag}"
+                                    th:text="${ast.assetTag + ' — ' + ast.name}"
+                                    th:data-name="${ast.name}"
+                                    th:data-cat="${ast.category}"
+                                    th:data-cond="${ast.condition}">AST0004 — Apple MacBook Pro</option>
+                        </select>
+                        <input type="hidden" id="modalAssetName" name="assetName">
+                        <input type="hidden" id="modalCategory" name="category">
+                    </div>
+
+                    <!-- Row 3: Return Condition & Damage Status (Image 3) -->
+                    <div class="form-grid-2">
+                        <div>
+                            <label class="form-label-styled">Return Condition *</label>
+                            <select id="modalConditionSelect" name="condition" class="cream-form-select" required>
+                                <option value="Good" selected>Good</option>
+                                <option value="New">New</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Poor">Poor</option>
+                                <option value="Damaged">Damaged</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label-styled">Damage Status *</label>
+                            <select id="modalDamageSelect" name="damageStatus" class="cream-form-select" required>
+                                <option value="No Damage" selected>No Damage</option>
+                                <option value="Minor Scratch">Minor Scratch</option>
+                                <option value="Broken Screen">Broken Screen</option>
+                                <option value="Faulty Port / Battery">Faulty Port / Battery</option>
+                                <option value="Liquid Spilled">Liquid Spilled</option>
+                                <option value="Heavy Damage">Heavy Damage</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Remarks (Image 3) -->
+                    <div>
+                        <label class="form-label-styled">Remarks</label>
+                        <textarea id="modalRemarksText" name="remarks" class="cream-form-textarea" rows="2" placeholder="Optional notes..."></textarea>
+                    </div>
+
+                    <!-- Hidden fields -->
+                    <input type="hidden" name="processedBy" value="Admin">
+                </div>
+
+                <!-- Modal Footer matching Image 3 -->
+                <div class="modal-footer-styled">
+                    <button type="button" class="btn-modal-cancel" onclick="closeReturnModal()">Cancel</button>
+                    <button type="submit" class="btn-modal-save">
+                        <span>💾</span>
+                        <span>Save</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script>
+        // -------------------------------------------------------------
+        // Live Filtering & Real-Time Pagination on Return Records Table
+        // -------------------------------------------------------------
+        let returnPaginationState = {
+            page: 1,
+            size: 10
+        };
+
+        function handleTableLiveFilter(term) {
+            const searchBox = document.getElementById('returnSearchInput');
+            const q = (term !== undefined ? term : (searchBox ? searchBox.value : '')).toLowerCase().trim();
+            const rows = Array.from(document.querySelectorAll('#returnTableBody tr:not(#noReturnsRow)'));
+
+            let matchedRows = [];
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const match = text.includes(q);
+                if (match) matchedRows.push(row);
+                row.style.display = 'none'; // Controlled by paginator
+            });
+
+            paginateReturnRows(matchedRows);
+        }
+
+        function paginateReturnRows(matchedRows) {
+            const total = matchedRows.length;
+            const sizeVal = returnPaginationState.size;
+            const pageSize = (sizeVal === 'all') ? (total || 1) : parseInt(sizeVal, 10);
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+            if (returnPaginationState.page > totalPages) returnPaginationState.page = totalPages;
+            if (returnPaginationState.page < 1) returnPaginationState.page = 1;
+
+            const startIdx = (returnPaginationState.page - 1) * pageSize;
+            const endIdx = (sizeVal === 'all') ? total : Math.min(startIdx + pageSize, total);
+
+            matchedRows.forEach((r, idx) => {
+                if (idx >= startIdx && idx < endIdx) {
+                    r.style.display = '';
+                } else {
+                    r.style.display = 'none';
+                }
+            });
+
+            // Update Total and Showing counters
+            const totalDisplay = document.getElementById('totalCountDisplay');
+            const showingDisplay = document.getElementById('showingCountDisplay');
+            if (totalDisplay) totalDisplay.textContent = total;
+            if (showingDisplay) {
+                if (total === 0) {
+                    showingDisplay.textContent = 'Showing 0-0 of 0 entries';
+                } else {
+                    showingDisplay.textContent = `Showing ${startIdx + 1}-${endIdx} of ${total} entries`;
+                }
+            }
+
+            // Render navigation buttons
+            const paginNav = document.getElementById('returnPaginationNav');
+            if (paginNav) {
+                if (total === 0 || totalPages <= 1) {
+                    paginNav.innerHTML = '';
+                    return;
+                }
+                let html = `<button type="button" class="btn-page-nav" ${returnPaginationState.page <= 1 ? 'disabled' : ''} onclick="goToReturnPage(${returnPaginationState.page - 1})">&lt; Prev</button>`;
+                for (let p = 1; p <= totalPages; p++) {
+                    html += `<button type="button" class="btn-page-nav ${returnPaginationState.page === p ? 'active' : ''}" onclick="goToReturnPage(${p})">${p}</button>`;
+                }
+                html += `<button type="button" class="btn-page-nav" ${returnPaginationState.page >= totalPages ? 'disabled' : ''} onclick="goToReturnPage(${returnPaginationState.page + 1})">Next &gt;</button>`;
+                paginNav.innerHTML = html;
+            }
+        }
+
+        function changeReturnPageSize(val) {
+            returnPaginationState.size = val;
+            returnPaginationState.page = 1;
+            handleTableLiveFilter();
+        }
+
+        function goToReturnPage(p) {
+            returnPaginationState.page = p;
+            handleTableLiveFilter();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            handleTableLiveFilter();
+        });
+
+        // -------------------------------------------------------------
+        // Modal Open / Close Logic
+        // -------------------------------------------------------------
+        function openNewReturnModal() {
+            document.getElementById('modalHeading').textContent = 'New Asset Return';
+            document.getElementById('returnForm').reset();
+            document.getElementById('modalReturnNo').value = '(auto generated)';
+            
+            // Set today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('modalReturnDate').value = today;
+
+            // Reset selected card
+            document.querySelectorAll('.asset-select-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('modalAssetDropdown').value = '';
+
+            document.getElementById('returnModal').classList.add('open');
+        }
+
+        function openEditReturnModal(btn) {
+            document.getElementById('modalHeading').textContent = 'Edit Asset Return';
+            
+            const returnNo = btn.getAttribute('data-no');
+            const date = btn.getAttribute('data-date');
+            const empName = btn.getAttribute('data-employee');
+            const assetName = btn.getAttribute('data-asset');
+            const assetTag = btn.getAttribute('data-tag');
+            const cond = btn.getAttribute('data-cond');
+            const damage = btn.getAttribute('data-damage');
+            const remarks = btn.getAttribute('data-remarks');
+
+            document.getElementById('modalReturnNo').value = returnNo;
+            
+            // Parse date if needed or set raw
+            if (date) {
+                // If formatted like "09 Aug 2026", set today or try parse
+                try {
+                    const parsed = new Date(date);
+                    if (!isNaN(parsed)) {
+                        document.getElementById('modalReturnDate').value = parsed.toISOString().split('T')[0];
+                    } else {
+                        document.getElementById('modalReturnDate').value = new Date().toISOString().split('T')[0];
+                    }
+                } catch(e) {
+                    document.getElementById('modalReturnDate').value = new Date().toISOString().split('T')[0];
+                }
+            }
+
+            // Set employee
+            const empSel = document.getElementById('modalEmployeeSelect');
+            for (let i = 0; i < empSel.options.length; i++) {
+                if (empSel.options[i].value === empName) {
+                    empSel.selectedIndex = i;
+                    handleModalEmployeeChange(empSel);
+                    break;
+                }
+            }
+
+            // Set Asset
+            const assetDropdown = document.getElementById('modalAssetDropdown');
+            if (assetTag) {
+                assetDropdown.value = assetTag;
+                handleModalAssetDropdownChange(assetDropdown);
+            }
+
+            // Highlight card
+            document.querySelectorAll('.asset-select-card').forEach(c => {
+                if (c.getAttribute('data-tag') === assetTag) {
+                    c.classList.add('selected');
+                    c.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    c.classList.remove('selected');
+                }
+            });
+
+            // Set condition & damage
+            if (cond) document.getElementById('modalConditionSelect').value = cond;
+            if (damage) document.getElementById('modalDamageSelect').value = damage;
+            if (remarks) document.getElementById('modalRemarksText').value = remarks;
+
+            document.getElementById('returnModal').classList.add('open');
+        }
+
+        function closeReturnModal() {
+            document.getElementById('returnModal').classList.remove('open');
+        }
+
+        // -------------------------------------------------------------
+        // Employee & Asset Selection Sync
+        // -------------------------------------------------------------
+        function handleModalEmployeeChange(sel) {
+            const opt = sel.options[sel.selectedIndex];
+            if (!opt) return;
+            document.getElementById('modalEmployeeId').value = opt.getAttribute('data-id') || '';
+            document.getElementById('modalDepartment').value = opt.getAttribute('data-dept') || '';
+        }
+
+        function selectModalAssetCard(card) {
+            document.querySelectorAll('.asset-select-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+
+            const tag = card.getAttribute('data-tag');
+            const name = card.getAttribute('data-name');
+            const cat = card.getAttribute('data-cat');
+            const cond = card.getAttribute('data-cond');
+
+            // Sync with dropdown and hidden inputs
+            document.getElementById('modalAssetDropdown').value = tag;
+            document.getElementById('modalAssetName').value = name;
+            document.getElementById('modalCategory').value = cat;
+            if (cond) document.getElementById('modalConditionSelect').value = cond;
+        }
+
+        function handleModalAssetDropdownChange(sel) {
+            const opt = sel.options[sel.selectedIndex];
+            if (!opt || !sel.value) return;
+
+            const tag = sel.value;
+            const name = opt.getAttribute('data-name');
+            const cat = opt.getAttribute('data-cat');
+            const cond = opt.getAttribute('data-cond');
+
+            document.getElementById('modalAssetName').value = name || '';
+            document.getElementById('modalCategory').value = cat || '';
+            if (cond) document.getElementById('modalConditionSelect').value = cond;
+
+            // Highlight card in grid
+            document.querySelectorAll('.asset-select-card').forEach(c => {
+                if (c.getAttribute('data-tag') === tag) {
+                    c.classList.add('selected');
+                    c.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    c.classList.remove('selected');
+                }
+            });
+        }
+
+        function filterModalAssetCards(q) {
+            const term = (q || '').toLowerCase().trim();
+            const cards = document.querySelectorAll('.asset-select-card');
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(term) ? 'flex' : 'none';
+            });
+        }
+
+        // -------------------------------------------------------------
+        // Export Helpers
+        // -------------------------------------------------------------
+        function exportToExcel() {
+            if (window.exportTableToExcel) {
+                window.exportTableToExcel('assetReturnTable', 'Asset_Returns', true);
+            } else {
+                const table = document.getElementById('assetReturnTable');
+                let csv = [];
+                for (let r = 0; r < table.rows.length; r++) {
+                    let row = [], cols = table.rows[r].querySelectorAll('td, th');
+                    for (let c = 0; c < cols.length - 1; c++) { // Exclude ACTIONS column
+                        let text = cols[c].innerText.replace(/[\r\n\t]+/g, ' ').replace(/"/g, '""').trim();
+                        row.push('"' + text + '"');
+                    }
+                    csv.push(row.join(','));
+                }
+                const blob = new Blob(['\uFEFF' + csv.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Asset_Returns_${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                    if (link.parentNode) link.parentNode.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                }, 150);
+            }
+        }
+
+        function exportToPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssetOS — Enterprise Asset Suite</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/pages.css}">
+</head>
+<body>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <!-- Sidebar Navigation (Dark Charcoal Theme) -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="brand">
+                <div class="brand-icon-box">A</div>
+                <div class="brand-text">
+                    <h1>AssetOS</h1>
+                    <span>Enterprise Asset Suite</span>
+                </div>
+            </a>
+            <button id="sidebarCloseBtn" class="sidebar-close-btn" aria-label="Close Sidebar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <!-- 1. Dashboard -->
+                <li class="nav-item">
+                    <a href="/" class="nav-link active">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                            <span>Dashboard</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 2. Asset Dropdown -->
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="toggleSubmenu('assetSubmenu', this)">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                            <span>Asset</span>
+                        </div>
+                        <svg class="submenu-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <ul id="assetSubmenu" class="submenu-list">
+                        <li><a href="/assets" class="submenu-link">Asset Entry</a></li>
+                        <li><a href="/assignments" class="submenu-link">Asset Assignment</a></li>
+                        <li><a href="/asset-return" class="submenu-link">Asset Return</a></li>
+                        <li><a href="/asset-transfer" class="submenu-link">Asset Transfer</a></li>
+                        <li><a href="/maintenance" class="submenu-link">Asset Maintenance</a></li>
+                        <li><a href="/asset-disposal" class="submenu-link">Asset Disposal</a></li>
+                    </ul>
+                </li>
+
+                <!-- 3. Employee -->
+                <li class="nav-item">
+                    <a href="/employees" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <span>Employee</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 4. Vendor -->
+                <li class="nav-item">
+                    <a href="/vendors" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            <span>Vendor</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 5. Expense -->
+                <li class="nav-item">
+                    <a href="/expenses" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                            <span>Expense</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 6. Reports -->
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            <span>Reports</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 7. Settings -->
+                <li class="nav-item">
+                    <a href="/settings" class="nav-link">
+                        <div class="nav-link-content">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <span>Settings</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            AssetOS v1.0 &bull; 2026<br>
+            <span style="color:#a8a29e;">Firebase Live Cloud DB</span>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <!-- Top Navigation Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <span class="header-page-title">Dashboard</span>
+                <span class="header-page-subtitle">Overview of your organization's assets</span>
+            </div>
+
+            <div class="header-right">
+                <!-- Live DB Status Chip -->
+                <div class="status-badge-chip">
+                    <span class="status-indicator-dot"></span>
+                    <span>Firebase Connected</span>
+                </div>
+
+                <!-- Universal Cream Search Input with Live Dropdown (Image 4) -->
+                <div class="cream-search-box-wrapper" style="position: relative;">
+                    <div class="cream-search-box" style="min-width: 290px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="topSearchInput" placeholder="Quick search assets, employee, tags..."
+                               oninput="handleUniversalDashboardSearch(this.value)"
+                               onkeydown="handleSearchKeyDown(event)"
+                               autocomplete="off">
+                    </div>
+                    <!-- Live Global Search Results Popover Dropdown (Image 4) -->
+                    <div id="globalSearchResultsDropdown" class="global-search-dropdown" style="display: none;">
+                        <div class="global-search-dropdown-header">
+                            <span id="searchResultCountText">Search Results</span>
+                            <span class="search-esc-hint">Press Esc to close</span>
+                        </div>
+                        <div id="globalSearchResultsList" class="global-search-results-list">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                        <div class="global-search-dropdown-footer">
+                            <button type="button" class="btn-search-scroll" onclick="scrollToDashboardTables()">
+                                <span>⬇ Scroll to Dashboard Tables</span>
+                            </button>
+                            <a href="/assets" id="searchViewAllAssetsLink" class="search-view-all-link">View All Assets &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Bell with Dropdown -->
+                <div class="notification-wrapper">
+                    <button id="notifBellBtn" class="header-action-icon-btn" aria-label="Notifications" onclick="toggleNotifications(event)">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span class="notification-badge" id="notifBadge">4</span>
+                    </button>
+                    <div id="notifDropdown" class="notification-dropdown">
+                        <div class="notif-dropdown-header">
+                            <span>System Notifications</span>
+                            <button type="button" class="notif-clear-btn" onclick="clearNotifications()">Mark all read</button>
+                        </div>
+                        <div class="notif-dropdown-body">
+                            <a href="/maintenance" class="notif-card-item unread">
+                                <div class="notif-icon-circle mnt">🛠️</div>
+                                <div class="notif-text">
+                                    <div class="notif-title">4 Assets Under Maintenance</div>
+                                    <div class="notif-desc">MNT001, MNT002, MNT003, MNT004 require review</div>
+                                    <div class="notif-meta">10m ago &bull; Maintenance</div>
+                                </div>
+                            </a>
+                            <a href="javascript:void(0)" onclick="openWarrantyModal()" class="notif-card-item unread">
+                                <div class="notif-icon-circle war">⏳</div>
+                                <div class="notif-text">
+                                    <div class="notif-title">Warranty Expiry Alert</div>
+                                    <div class="notif-desc">2 asset warranties expiring in next 30 days</div>
+                                    <div class="notif-meta">1h ago &bull; Warranty</div>
+                                </div>
+                            </a>
+                            <a href="/asset-transfer" class="notif-card-item unread">
+                                <div class="notif-icon-circle trf">🔀</div>
+                                <div class="notif-text">
+                                    <div class="notif-title">Asset TRF0004 Completed</div>
+                                    <div class="notif-desc">MacBook Pro reassigned from Operations to IT</div>
+                                    <div class="notif-meta">2h ago &bull; Transfers</div>
+                                </div>
+                            </a>
+                            <a href="/asset-disposal" class="notif-card-item">
+                                <div class="notif-icon-circle dis">🚫</div>
+                                <div class="notif-text">
+                                    <div class="notif-title">Disposal Records Verified</div>
+                                    <div class="notif-desc">3 retired assets logged in disposal audit</div>
+                                    <div class="notif-meta">Yesterday &bull; Disposals</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="notif-dropdown-footer">
+                            <a href="/reports">View System Audit Reports &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dark Mode Toggle Button -->
+                <button class="header-action-icon-btn" aria-label="Dark mode toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+
+                <!-- User Profile & Avatar Menu with Logout -->
+                <div class="user-profile-menu">
+                    <button class="user-avatar-btn" id="userMenuBtn" onclick="toggleUserDropdown()">
+                        <span th:text="${currentUser != null ? currentUser.avatarInitials : 'AD'}">AD</span>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown-menu">
+                        <div class="user-dropdown-header">
+                            <div class="user-dropdown-name" th:text="${currentUser != null ? currentUser.fullName : 'System Administrator (Admin)'}">System Administrator</div>
+                            <div class="user-dropdown-role" th:text="${currentUser != null ? currentUser.role : 'Administrator'}">Administrator</div>
+                        </div>
+                        <a href="/settings" class="user-dropdown-item">
+                            <span>⚙️</span> System Settings
+                        </a>
+                        <a href="/logout" class="user-dropdown-item logout">
+                            <span>🚪</span> Sign Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Body -->
+        <main class="content-body">
+            <!-- Welcome Header Card -->
+            <div class="welcome-card-row">
+                <div class="welcome-title-group">
+                    <h2>
+                        Asset Management Dashboard
+                        <span class="live-badge">Live Data</span>
+                    </h2>
+                    <div class="welcome-subtitle">
+                        Welcome back, <strong th:text="${currentUser != null ? currentUser.fullName : 'System Administrator (Admin)'}">System Administrator (Admin)</strong> 👋 &bull; <span th:text="${currentDate}">Sunday, 11 Oct 2026</span>
+                    </div>
+                </div>
+                <div class="welcome-filters">
+                    <select class="filter-select" id="dashboardTimeFilter" onchange="applyDashboardTimeFilter(this.value)">
+                        <option value="all">Filter: All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="year">This Financial Year</option>
+                    </select>
+                    <button class="refresh-btn" type="button" onclick="location.reload()">
+                        <span>🔄</span> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- 8 Statistic Cards (Matching the reference screenshots) -->
+            <section class="metrics-grid" aria-label="Asset Key Metrics">
+                <!-- 1. Total Assets -->
+                <div class="metric-card total">
+                    <div class="metric-header">
+                        <span class="metric-icon-box">📦</span>
+                        <a href="/assets" class="metric-view-link">View &rarr;</a>
+                    </div>
+                    <div class="metric-number" th:text="${stats.totalAssets}">20</div>
+                    <div class="metric-label">Total Assets</div>
+                    <div class="metric-sublabel">All Registered Assets</div>
+                </div>
+
+                <!-- 2. Available Assets -->
+                <div class="metric-card available">
+                    <div class="metric-header">
+                        <span class="metric-icon-box">🟢</span>
+                        <a href="/assets?status=Available" class="metric-view-link">View &rarr;</a>
+                    </div>
+                    <div class="metric-number" th:text="${stats.availableAssets}">8</div>
+                    <div class="metric-label">Available Assets</div>
+                    <div class="metric-sublabel">40% of active assets</div>
+                </div>
+
+                <!-- 3. Assigned Assets -->
+                <div class="metric-card assigned">
+                    <div class="metric-header">
+                        <span class="metric-icon-box">👤</span>
+                        <a href="/assignments" class="metric-view-link">View &rarr;</a>
+                    </div>
+                    <div class="metric-number" th:text="${stats.assignedAssets}">8</div>
+                    <div class="metric-label">Assigned Assets</div>
+                    <div class="metric-sublabel">40% of active assets</div>
+                </div>
+
+                <!-- 4. Under Maintenance -->
+                <div class="metric-card maintenance">
+                    <div class="metric-header">
+                        <span class="metric-icon-box">🛠️</span>
+                        <a href="/maintenance" class="metric-view-link">View &rarr;</a>
+                    </div>
+                    <div class="metric-number" th:text="${stats.underMaintenance}">4</div>
+                    <div class="metric-label">Under Maintenance</div>
+                    <div class="metric-sublabel">4 Active Repair Tickets</div>
+                </div>
+
+                <!-- 5. Disposed Assets -->
+                <div class="metric-card disposed">
+                    <div class="metric-header">
+                        <span class="metric-icon-box">🚫</span>
+                        <a href="/asset-disposal" class="metric-view-link">View &rarr;</a>
+                    </div>
+                    <div class="metric-number" th:text="${stats.disposedAssets}">3</div>
+                    <div class="metric-label">Disposed Assets</div>
+                    <div class="metric-sublabel">Logged Disposal Records</div>
+                </div>
+
+                <!-- 6. Total Purchase Value -->
+                <div class="metric-card purchase">
+                    <div class="metric-header">
+                        <span class="metric-icon-box">💰</span>
+                        <a href="/reports" class="metric-view-link">View &rarr;</a>
+                    </div>
+                    <div class="metric-number" th:text="${stats.totalPurchaseValue}">₹37,46,384</div>
+                    <div class="metric-label">Total Purchase Value</div>
+                    <div class="metric-sublabel">Acquisition Cost</div>
+                </div>
+
+                <!-- 7. Current Book Value -->
+                <div class="metric-card book">
+                    <div class="metric-header">
+                        <span class="metric-icon-box">📉</span>
+                        <a href="/reports" class="metric-view-link">View &rarr;</a>
+                    </div>
+                    <div class="metric-number" th:text="${stats.currentBookValue}">₹21,20,563</div>
+                    <div class="metric-label">Current Book Value</div>
+                    <div class="metric-sublabel">Depreciated Value</div>
+                </div>
+
+                <!-- 8. Warranty Expiring Soon -->
+                <div class="metric-card warranty" style="cursor: pointer;" onclick="openWarrantyModal()">
+                    <div class="metric-header">
+                        <span class="metric-icon-box">⏳</span>
+                        <a href="javascript:void(0)" onclick="openWarrantyModal(); event.stopPropagation();" class="metric-view-link">View &rarr;</a>
+                    </div>
+                    <div class="metric-number" th:text="${stats.warrantyExpiringSoon}">2</div>
+                    <div class="metric-label">Warranty Expiring Soon</div>
+                    <div class="metric-sublabel">Within Next 30 Days</div>
+                </div>
+            </section>
+
+            <!-- Quick Actions Bar -->
+            <div class="quick-actions-bar">
+                <span class="quick-actions-label">⚡ Quick Actions</span>
+                <button class="quick-action-btn primary" id="addAssetBtn" type="button">
+                    <span>+</span> Add Asset
+                </button>
+                <button class="quick-action-btn" type="button" onclick="location.href='/assignments'">
+                    <span>👤</span> Assign Asset
+                </button>
+                <button class="quick-action-btn" type="button" onclick="location.href='/asset-return'">
+                    <span>🔄</span> Return Asset
+                </button>
+                <button class="quick-action-btn" type="button" onclick="location.href='/asset-transfer'">
+                    <span>🔀</span> Transfer
+                </button>
+                <button class="quick-action-btn" type="button" onclick="location.href='/maintenance'">
+                    <span>🔧</span> Maintenance
+                </button>
+                <button class="quick-action-btn" type="button" onclick="location.href='/asset-disposal'">
+                    <span>🗑️</span> Disposal
+                </button>
+                <button class="quick-action-btn" type="button" onclick="location.href='/employees'">
+                    <span>👥</span> Employee
+                </button>
+                <button class="quick-action-btn" type="button" onclick="location.href='/vendors'">
+                    <span>🏢</span> Vendor
+                </button>
+            </div>
+
+            <!-- Analytical Widgets Row 1: Status Overview (Donut) & Category Counts (Bars) -->
+            <div class="widgets-grid-2">
+                <!-- Widget 1: Asset Status Overview -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">⭕ Asset Status Overview</span>
+                        <span class="widget-subtitle">Click segment to filter</span>
+                    </div>
+                    <div class="donut-wrapper">
+                        <!-- SVG Donut Chart with precise segment proportions: 40% Available (Green), 40% Assigned (Blue), 20% Maint (Orange) -->
+                        <svg class="donut-chart-svg" viewBox="0 0 42 42">
+                            <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>
+                            <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#f3f4f6" stroke-width="5"></circle>
+                            <!-- Available 40% (stroke-dasharray 40 60, offset 0) -->
+                            <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#10b981" stroke-width="5" stroke-dasharray="40 60" stroke-dashoffset="0"></circle>
+                            <!-- Assigned 40% (stroke-dasharray 40 60, offset -40) -->
+                            <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#3b82f6" stroke-width="5" stroke-dasharray="40 60" stroke-dashoffset="-40"></circle>
+                            <!-- Maintenance 20% (stroke-dasharray 20 80, offset -80) -->
+                            <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#f59e0b" stroke-width="5" stroke-dasharray="20 80" stroke-dashoffset="-80"></circle>
+                        </svg>
+                        <div class="donut-legend">
+                            <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> Available: 8 (40%)</div>
+                            <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span> Assigned: 8 (40%)</div>
+                            <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> Under Maintenance: 4 (20%)</div>
+                            <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> Damaged: 0 (0%)</div>
+                            <div class="legend-item"><span class="legend-dot" style="background:#8b5cf6;"></span> Lost: 0 (0%)</div>
+                            <div class="legend-item"><span class="legend-dot" style="background:#6b7280;"></span> Disposed: 0 (0%)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget 2: Assets by Category -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">📊 Assets by Category</span>
+                        <span class="widget-subtitle">Sorted by count</span>
+                    </div>
+                    <div class="vertical-bars-container">
+                        <div class="bar-col">
+                            <span class="bar-count-label">4</span>
+                            <div class="bar-pillar" style="height: 100%; background: #8b5cf6;"></div>
+                            <span class="bar-x-label" title="Peripheral">Peripheral</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">4</span>
+                            <div class="bar-pillar" style="height: 100%; background: #10b981;"></div>
+                            <span class="bar-x-label" title="Laptop">Laptop</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">3</span>
+                            <div class="bar-pillar" style="height: 75%; background: #3b82f6;"></div>
+                            <span class="bar-x-label" title="Furniture">Furniture</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">2</span>
+                            <div class="bar-pillar" style="height: 50%; background: #f59e0b;"></div>
+                            <span class="bar-x-label" title="Desktop">Desktop</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">2</span>
+                            <div class="bar-pillar" style="height: 50%; background: #ef4444;"></div>
+                            <span class="bar-x-label" title="Networking">Networking</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">2</span>
+                            <div class="bar-pillar" style="height: 50%; background: #a855f7;"></div>
+                            <span class="bar-x-label" title="Mobile">Mobile</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">2</span>
+                            <div class="bar-pillar" style="height: 50%; background: #6366f1;"></div>
+                            <span class="bar-x-label" title="Printer">Printer</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">1</span>
+                            <div class="bar-pillar" style="height: 25%; background: #4f46e5;"></div>
+                            <span class="bar-x-label" title="Vehicle">Vehicle</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytical Widgets Row 2: Department Horizontal Bars & Asset Value by Category -->
+            <div class="widgets-grid-2">
+                <!-- Widget 3: Assets by Department -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">🏢 Assets by Department</span>
+                        <span class="widget-subtitle">Department distribution</span>
+                    </div>
+                    <div class="horizontal-bars-container">
+                        <div class="hbar-row">
+                            <span class="hbar-label">IT</span>
+                            <div class="hbar-track">
+                                <div class="hbar-fill" style="width: 100%; background: #8b5cf6;"></div>
+                            </div>
+                            <span class="hbar-val">7</span>
+                        </div>
+                        <div class="hbar-row">
+                            <span class="hbar-label">HR</span>
+                            <div class="hbar-track">
+                                <div class="hbar-fill" style="width: 71%; background: #10b981;"></div>
+                            </div>
+                            <span class="hbar-val">5</span>
+                        </div>
+                        <div class="hbar-row">
+                            <span class="hbar-label">Operations</span>
+                            <div class="hbar-track">
+                                <div class="hbar-fill" style="width: 57%; background: #3b82f6;"></div>
+                            </div>
+                            <span class="hbar-val">4</span>
+                        </div>
+                        <div class="hbar-row">
+                            <span class="hbar-label">Finance</span>
+                            <div class="hbar-track">
+                                <div class="hbar-fill" style="width: 28%; background: #f59e0b;"></div>
+                            </div>
+                            <span class="hbar-val">2</span>
+                        </div>
+                        <div class="hbar-row">
+                            <span class="hbar-label">Sales</span>
+                            <div class="hbar-track">
+                                <div class="hbar-fill" style="width: 28%; background: #ef4444;"></div>
+                            </div>
+                            <span class="hbar-val">2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget 4: Asset Value by Category -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">💰 Asset Value by Category</span>
+                        <span class="widget-subtitle">Purchase cost in ₹</span>
+                    </div>
+                    <div class="vertical-bars-container">
+                        <div class="bar-col">
+                            <span class="bar-count-label">₹21.5L</span>
+                            <div class="bar-pillar" style="height: 100%; background: #8b5cf6;"></div>
+                            <span class="bar-x-label" title="Vehicle">Vehicle</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">₹4.5L</span>
+                            <div class="bar-pillar" style="height: 22%; background: #10b981;"></div>
+                            <span class="bar-x-label" title="Laptop">Laptop</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">₹2.6L</span>
+                            <div class="bar-pillar" style="height: 13%; background: #3b82f6;"></div>
+                            <span class="bar-x-label" title="Mobile">Mobile</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">₹2.1L</span>
+                            <div class="bar-pillar" style="height: 11%; background: #f59e0b;"></div>
+                            <span class="bar-x-label" title="Desktop">Desktop</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">₹1.5L</span>
+                            <div class="bar-pillar" style="height: 8%; background: #ef4444;"></div>
+                            <span class="bar-x-label" title="Printer">Printer</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">₹1.2L</span>
+                            <div class="bar-pillar" style="height: 6%; background: #a855f7;"></div>
+                            <span class="bar-x-label" title="Networking">Netw.</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">₹80K</span>
+                            <div class="bar-pillar" style="height: 4%; background: #06b6d4;"></div>
+                            <span class="bar-x-label" title="Peripheral">Periph.</span>
+                        </div>
+                        <div class="bar-col">
+                            <span class="bar-count-label">₹60K</span>
+                            <div class="bar-pillar" style="height: 3%; background: #3b82f6;"></div>
+                            <span class="bar-x-label" title="Furniture">Furn.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytical Widgets Row 3: Depreciation Overview & Expense Overview -->
+            <div class="widgets-grid-2">
+                <!-- Widget 5: Depreciation Overview -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">📉 Depreciation Overview</span>
+                        <span class="live-badge" style="background:#fef3c7; color:#b45309;">SLM & WDV</span>
+                    </div>
+                    <div class="financial-metrics-row">
+                        <div class="fin-metric-box">
+                            <div class="fin-metric-title">Total Purchase Cost</div>
+                            <div class="fin-metric-amount">₹37,46,384</div>
+                        </div>
+                        <div class="fin-metric-box">
+                            <div class="fin-metric-title">Current Book Value</div>
+                            <div class="fin-metric-amount" style="color:#059669;">₹21,21,371</div>
+                        </div>
+                        <div class="fin-metric-box">
+                            <div class="fin-metric-title">Accumulated Dep.</div>
+                            <div class="fin-metric-amount" style="color:#dc2626;">₹16,25,013</div>
+                        </div>
+                        <div class="fin-metric-box">
+                            <div class="fin-metric-title">Depreciation (This FY)</div>
+                            <div class="fin-metric-amount" style="color:#2563eb;">₹5,66,767</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget 6: Expense Overview -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">💳 Expense Overview</span>
+                        <a href="/expenses" class="metric-view-link" style="color:#2563eb;">View Expenses &rarr;</a>
+                    </div>
+                    <div class="financial-metrics-row" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="fin-metric-box">
+                            <div class="fin-metric-title">Expenses (This Month)</div>
+                            <div class="fin-metric-amount" style="color:#2563eb;">₹3,001</div>
+                        </div>
+                        <div class="fin-metric-box">
+                            <div class="fin-metric-title">Maintenance Exp.</div>
+                            <div class="fin-metric-amount" style="color:#b45309;">₹1,800</div>
+                        </div>
+                        <div class="fin-metric-box">
+                            <div class="fin-metric-title">Total FY Expenses</div>
+                            <div class="fin-metric-amount" style="color:#111827;">₹3,001</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytical Widgets Row 4: Warranty Expiries & Maintenance Alerts -->
+            <div class="widgets-grid-2">
+                <!-- Widget 7: Warranty Expiring Soon (Updated with real upcoming expiries) -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">⏳ Warranty Expiring Soon</span>
+                        <a href="javascript:void(0)" onclick="openWarrantyModal()" class="metric-view-link" style="color:#b45309;">View Report (2) &rarr;</a>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.6rem; padding: 0.35rem 0;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.65rem 0.85rem; background:#fefce8; border:1px solid #fef08a; border-radius:8px; cursor:pointer;" onclick="openWarrantyModal()">
+                            <div>
+                                <strong style="font-size:0.84rem; color:#18181b;">AST0004 &bull; Apple MacBook Pro 16"</strong>
+                                <div style="font-size:0.75rem; color:#854d0e; margin-top:2px;">Expiry: 28 Oct 2026 &bull; Apple Care India</div>
+                            </div>
+                            <span style="background:#fef3c7; color:#b45309; padding:2px 8px; border-radius:12px; font-size:0.73rem; font-weight:700;">17 Days Left</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.65rem 0.85rem; background:#fefce8; border:1px solid #fef08a; border-radius:8px; cursor:pointer;" onclick="openWarrantyModal()">
+                            <div>
+                                <strong style="font-size:0.84rem; color:#18181b;">AST0012 &bull; Apple iPhone 15 Pro</strong>
+                                <div style="font-size:0.75rem; color:#854d0e; margin-top:2px;">Expiry: 02 Nov 2026 &bull; TechSource BD</div>
+                            </div>
+                            <span style="background:#fef3c7; color:#b45309; padding:2px 8px; border-radius:12px; font-size:0.73rem; font-weight:700;">22 Days Left</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget 8: Maintenance Alerts (Real-time active tickets) -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">🛠️ Maintenance Alerts</span>
+                        <a href="/maintenance" class="metric-view-link" style="color:#c2410c;">Go to Maintenance (4) &rarr;</a>
+                    </div>
+                    <div class="maintenance-alert-list">
+                        <div class="maintenance-alert-item" th:each="alert : ${maintenanceAlerts}">
+                            <div>
+                                <div class="alert-item-title" th:text="${alert.assetName}">Modular Workstation Desk</div>
+                                <div class="alert-item-meta" th:text="'Priority: ' + ${alert.type} + ' &bull; ' + ${alert.alertBadge}">Priority: High &bull; Est: 12 Oct</div>
+                            </div>
+                            <span class="alert-pill" th:text="${alert.status}">In Progress</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytical Widgets Row 5: Asset Utilization, Condition, & Locations -->
+            <div class="widgets-grid-3">
+                <!-- Widget 9: Asset Utilization -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">🎯 Asset Utilization</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:1.25rem 0;">
+                        <div style="font-size: 2.5rem; font-weight: 800; color: #111827;">55%</div>
+                        <div style="font-size: 0.8rem; color: #6b7280; margin-bottom: 1rem;">Active Fleet Utilization</div>
+                        <div style="width: 100%; height: 8px; display:flex; border-radius: 9999px; overflow: hidden; background: #e5e7eb;">
+                            <div style="width: 55%; background: #3b82f6;" title="Assigned: 11"></div>
+                            <div style="width: 25%; background: #10b981;" title="Available: 5"></div>
+                            <div style="width: 20%; background: #f59e0b;" title="Maintenance: 4"></div>
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-top: 0.85rem; font-size: 0.75rem; color: #4b5563;">
+                            <span>🔵 Assigned: 11</span>
+                            <span>🟢 Avail: 5</span>
+                            <span>🟠 Maint: 4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget 10: Asset Condition Breakdown -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">🔍 Asset Condition Breakdown</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.85rem; padding: 0.5rem 0;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.25rem;">
+                                <span>New</span>
+                                <strong th:text="${conditionCounts['New'] != null ? conditionCounts['New'] + ' (45%)' : '9 (45%)'}">9 (45%)</strong>
+                            </div>
+                            <div class="bar-container"><div class="bar-fill" style="width: 45%; background: #8b5cf6;"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.25rem;">
+                                <span>Good</span>
+                                <strong th:text="${conditionCounts['Good'] != null ? conditionCounts['Good'] + ' (50%)' : '10 (50%)'}">10 (50%)</strong>
+                            </div>
+                            <div class="bar-container"><div class="bar-fill" style="width: 50%; background: #10b981;"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.25rem;">
+                                <span>Fair</span>
+                                <strong th:text="${conditionCounts['Fair'] != null ? conditionCounts['Fair'] + ' (5%)' : '1 (5%)'}">1 (5%)</strong>
+                            </div>
+                            <div class="bar-container"><div class="bar-fill" style="width: 5%; background: #f59e0b;"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.25rem;">
+                                <span>Damaged</span>
+                                <strong th:text="${conditionCounts['Damaged'] != null ? conditionCounts['Damaged'] + ' (0%)' : '0 (0%)'}">0 (0%)</strong>
+                            </div>
+                            <div class="bar-container"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget 11: Assets by Location -->
+                <div class="widget-card">
+                    <div class="widget-header">
+                        <span class="widget-title">📍 Assets by Location</span>
+                    </div>
+                    <div class="location-list">
+                        <div class="location-item" th:each="loc : ${locations}">
+                            <div>
+                                <div class="location-name">
+                                    <span>📍</span>
+                                    <span th:text="${loc.name}">Floor 1</span>
+                                </div>
+                                <div class="location-value" th:text="'Value: ' + ${loc.valueFormatted}">Value: ₹7,54,395</div>
+                            </div>
+                            <span class="location-count-badge" th:text="${loc.assetCount} + ' assets'">10 assets</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 1. Recently Added Assets Table (Matching Reference Images 1 & 3) -->
+            <!-- ============================================================= -->
+            <section class="card" style="margin-top: 1.5rem;" aria-label="Recently Added Assets">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <h2 class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span>📦</span> Recently Added Assets
+                        </h2>
+                        <span class="card-subtitle">Real-time inventory registered in system</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="/assets" class="btn-table-view-all">View All Assets &rarr;</a>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="black-table">
+                        <thead>
+                            <tr>
+                                <th>ASSET ID</th>
+                                <th>ASSET NAME</th>
+                                <th>CATEGORY</th>
+                                <th>PURCHASE DATE</th>
+                                <th>PURCHASE COST</th>
+                                <th>DEPARTMENT</th>
+                                <th>LOCATION</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentAssetsTableBody">
+                            <tr th:each="a : ${recentAddedAssets}">
+                                <td><strong th:text="${a.assetTag}">AST0020</strong></td>
+                                <td th:text="${a.name}">Dell PowerEdge T350 Server</td>
+                                <td><span class="category-pill" th:text="${a.category}">Desktop</span></td>
+                                <td th:text="${a.purchaseDate}">30 Nov 2024</td>
+                                <td><strong th:text="${a.purchaseCost}">₹2,10,000</strong></td>
+                                <td th:text="${a.department != null && !a.department.isBlank() ? a.department : 'General'}">HR</td>
+                                <td th:text="${a.location != null && !a.location.isBlank() ? a.location : 'Warehouse'}">Warehouse</td>
+                                <td>
+                                    <span class="status-badge" th:classappend="${a.statusBadgeClass}">
+                                        <span class="badge-dot"></span>
+                                        <span th:text="${a.status}">Assigned</span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 2. Side-by-Side: Recent Assignments & Recent Returns (Images 1 & 3) -->
+            <!-- ============================================================= -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.25rem;">
+                <!-- Recent Asset Assignments -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <h2 class="card-title" style="display:flex; align-items:center; gap:0.4rem; font-size:1rem;">
+                                <span>📋</span> Recent Asset Assignments
+                            </h2>
+                        </div>
+                        <a href="/assignments" class="btn-table-view-all">View All Assignments &rarr;</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="black-table">
+                            <thead>
+                                <tr>
+                                    <th>ASSIGN ID</th>
+                                    <th>DATE</th>
+                                    <th>EMPLOYEE</th>
+                                    <th>ASSETS COUNT</th>
+                                    <th>ASSIGNED BY</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentAssignmentsTableBody">
+                                <tr th:each="asn : ${recentAssignments}">
+                                    <td><strong th:text="${asn.assignmentId}">ASN0019</strong></td>
+                                    <td th:text="${asn.assignmentDate}">09 Aug 2026</td>
+                                    <td><strong th:text="${asn.employeeName}">Karim Uddin</strong></td>
+                                    <td>
+                                        <span style="background:#eff6ff; color:#1d4ed8; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;">1 asset(s)</span>
+                                    </td>
+                                    <td th:text="${asn.assignedBy != null ? asn.assignedBy : 'Admin'}">Admin</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Asset Returns -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <h2 class="card-title" style="display:flex; align-items:center; gap:0.4rem; font-size:1rem;">
+                                <span>🔄</span> Recent Asset Returns
+                            </h2>
+                        </div>
+                        <a href="/asset-return" class="btn-table-view-all">View All Returns &rarr;</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="black-table">
+                            <thead>
+                                <tr>
+                                    <th>RETURN ID</th>
+                                    <th>DATE</th>
+                                    <th>EMPLOYEE</th>
+                                    <th>ASSET</th>
+                                    <th>CONDITION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentReturnsTableBody">
+                                <tr th:each="ret : ${recentReturns}">
+                                    <td><strong th:text="${ret.returnNo}">RET0001</strong></td>
+                                    <td th:text="${ret.date}">15 Dec 2023</td>
+                                    <td><strong th:text="${ret.returnedBy}">Carlos Fuentes</strong></td>
+                                    <td th:text="${ret.assetName}">HP EliteBook 840 G10</td>
+                                    <td>
+                                        <span style="background:#ecfdf5; color:#047857; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:600;" th:text="${ret.condition}">Good</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 3. Tabbed Recent Asset Activity Feed (Matching Reference Images 2, 4, 5) -->
+            <!-- ============================================================= -->
+            <section class="card" style="margin-top: 1.25rem;" aria-label="Recent Asset Activity Feed">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <h2 class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span>⏱️</span> Recent Asset Activity
+                        </h2>
+                    </div>
+                    <!-- Pill filter tabs (All Activity, Assets, Assignments, Returns, Maintenance) -->
+                    <div class="activity-tabs-nav">
+                        <button type="button" class="activity-tab-btn active" onclick="switchActivityTab('ALL', this)">All Activity</button>
+                        <button type="button" class="activity-tab-btn" onclick="switchActivityTab('ASSET', this)">Assets</button>
+                        <button type="button" class="activity-tab-btn" onclick="switchActivityTab('ASSIGNMENT', this)">Assignments</button>
+                        <button type="button" class="activity-tab-btn" onclick="switchActivityTab('RETURN', this)">Returns</button>
+                        <button type="button" class="activity-tab-btn" onclick="switchActivityTab('MAINTENANCE', this)">Maintenance</button>
+                    </div>
+                </div>
+
+                <div class="activity-feed-list" id="timelineActivityList" style="padding: 0 1.25rem;">
+                    <div class="activity-feed-item" th:each="act : ${timelineActivities}" th:attr="data-type=${act.type}">
+                        <div class="activity-feed-left">
+                            <div class="activity-icon-box" th:classappend="${act.iconClass}" th:text="${act.icon}">👤</div>
+                            <div>
+                                <div class="activity-feed-title" th:text="${act.title}">Asset Assigned to Karim Uddin</div>
+                                <div class="activity-feed-meta" th:text="${act.subtitle}">Assignment #ASN0019 &bull; By Admin</div>
+                            </div>
+                        </div>
+                        <div class="activity-feed-date" th:text="${act.date}">09 Aug 2026</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Asset Interactive Modal Dialog -->
+    <div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="modal-title">Add New IT Asset</h3>
+                <button id="modalCloseBtn" class="modal-close-btn" type="button" aria-label="Close dialog">&times;</button>
+            </div>
+            <form id="addAssetForm">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="formAssetTag" class="form-label">Asset Tag *</label>
+                            <input type="text" id="formAssetTag" class="form-input" placeholder="e.g. AST0021" required value="AST0021">
+                        </div>
+                        <div class="form-group">
+                            <label for="formCategory" class="form-label">Category *</label>
+                            <select id="formCategory" class="form-select" required>
+                                <option value="Laptop">Laptop</option>
+                                <option value="Desktop">Desktop</option>
+                                <option value="Peripheral">Peripheral</option>
+                                <option value="Networking">Networking</option>
+                                <option value="Mobile">Mobile</option>
+                                <option value="Printer">Printer</option>
+                                <option value="Furniture">Furniture</option>
+                                <option value="Vehicle">Vehicle</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formAssetName" class="form-label">Asset Name / Model *</label>
+                        <input type="text" id="formAssetName" class="form-input" placeholder="e.g. Apple MacBook Air M3" required value="Apple MacBook Air M3">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="formAssignee" class="form-label">Assigned Employee</label>
+                            <input type="text" id="formAssignee" class="form-input" placeholder="e.g. Alex Rivera (Blank if unassigned)">
+                        </div>
+                        <div class="form-group">
+                            <label for="formDepartment" class="form-label">Department / Location</label>
+                            <input type="text" id="formDepartment" class="form-input" placeholder="e.g. IT / Floor 1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formStatus" class="form-label">Initial Status *</label>
+                        <select id="formStatus" class="form-select" required>
+                            <option value="Available">Available (In Storage)</option>
+                            <option value="Assigned">Assigned (In Use)</option>
+                            <option value="Under Maintenance">Under Maintenance</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="modalCancelBtn" class="btn-secondary" type="button">Cancel</button>
+                    <button type="submit" class="btn-primary" style="background:#f59e0b; color:#171614; font-weight:700;">Save Asset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Warranty Expiry Report Modal (Reference Image 5) -->
+    <div id="warrantyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="warrantyModalTitle">
+        <div class="modal-dialog" style="max-width: 780px;">
+            <div class="modal-header" style="background: #18181b; color: #fff;">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <span style="font-size: 1.3rem;">⏳</span>
+                    <div>
+                        <h3 id="warrantyModalTitle" class="modal-title" style="color: #fff; margin:0;">Warranty Expiry Report</h3>
+                        <p style="font-size: 0.76rem; color: #a1a1aa; margin:0;">IT Asset warranty alerts and renewals tracking</p>
+                    </div>
+                </div>
+                <button class="modal-close-btn" type="button" onclick="closeWarrantyModal()" style="color:#fff;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1.25rem;">
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 1.25rem;">
+                    <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:8px; padding:0.6rem 1rem; flex:1;">
+                        <span style="display:block; font-size:0.75rem; color:#92400e; font-weight:600;">EXPIRING WITHIN 30 DAYS</span>
+                        <strong style="font-size:1.4rem; color:#b45309;">2 Assets</strong>
+                    </div>
+                    <div style="background:#fee2e2; border:1px solid #fecaca; border-radius:8px; padding:0.6rem 1rem; flex:1;">
+                        <span style="display:block; font-size:0.75rem; color:#991b1b; font-weight:600;">ALREADY EXPIRED</span>
+                        <strong style="font-size:1.4rem; color:#dc2626;">1 Asset</strong>
+                    </div>
+                </div>
+
+                <h4 style="font-size:0.85rem; font-weight:700; color:#1f2937; margin-bottom:0.6rem; text-transform:uppercase; letter-spacing:0.04em;">Expiring Soon (Action Required)</h4>
+                <div style="overflow-x:auto; margin-bottom:1.25rem; border:1px solid #e5e7eb; border-radius:8px;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+                        <thead style="background:#f9fafb; text-align:left; border-bottom:1px solid #e5e7eb;">
+                            <tr>
+                                <th style="padding:0.65rem 0.85rem;">ASSET TAG</th>
+                                <th style="padding:0.65rem 0.85rem;">ASSET / MODEL</th>
+                                <th style="padding:0.65rem 0.85rem;">EXPIRY DATE</th>
+                                <th style="padding:0.65rem 0.85rem;">DAYS LEFT</th>
+                                <th style="padding:0.65rem 0.85rem;">VENDOR</th>
+                                <th style="padding:0.65rem 0.85rem; text-align:center;">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid #f3f4f6;">
+                                <td style="padding:0.65rem 0.85rem;"><strong>AST0004</strong></td>
+                                <td style="padding:0.65rem 0.85rem;">Apple MacBook Pro 16"</td>
+                                <td style="padding:0.65rem 0.85rem; color:#b45309; font-weight:600;">28 Oct 2026</td>
+                                <td style="padding:0.65rem 0.85rem;"><span style="background:#fef3c7; color:#b45309; padding:2px 7px; border-radius:12px; font-weight:700; font-size:0.74rem;">17 Days</span></td>
+                                <td style="padding:0.65rem 0.85rem;">Apple Care India</td>
+                                <td style="padding:0.65rem 0.85rem; text-align:center;">
+                                    <button type="button" onclick="showFilterToast('Warranty renewal request submitted for AST0004 to Apple Care')" style="background:#3b82f6; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:600; cursor:pointer;">Renew</button>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f3f4f6;">
+                                <td style="padding:0.65rem 0.85rem;"><strong>AST0012</strong></td>
+                                <td style="padding:0.65rem 0.85rem;">Apple iPhone 15 Pro</td>
+                                <td style="padding:0.65rem 0.85rem; color:#b45309; font-weight:600;">02 Nov 2026</td>
+                                <td style="padding:0.65rem 0.85rem;"><span style="background:#fef3c7; color:#b45309; padding:2px 7px; border-radius:12px; font-weight:700; font-size:0.74rem;">22 Days</span></td>
+                                <td style="padding:0.65rem 0.85rem;">TechSource BD</td>
+                                <td style="padding:0.65rem 0.85rem; text-align:center;">
+                                    <button type="button" onclick="showFilterToast('Warranty renewal request submitted for AST0012 to TechSource BD')" style="background:#3b82f6; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:600; cursor:pointer;">Renew</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 style="font-size:0.85rem; font-weight:700; color:#1f2937; margin-bottom:0.6rem; text-transform:uppercase; letter-spacing:0.04em;">Expired Warranties</h4>
+                <div style="overflow-x:auto; border:1px solid #e5e7eb; border-radius:8px;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+                        <thead style="background:#f9fafb; text-align:left; border-bottom:1px solid #e5e7eb;">
+                            <tr>
+                                <th style="padding:0.65rem 0.85rem;">ASSET TAG</th>
+                                <th style="padding:0.65rem 0.85rem;">ASSET / MODEL</th>
+                                <th style="padding:0.65rem 0.85rem;">EXPIRED ON</th>
+                                <th style="padding:0.65rem 0.85rem;">STATUS</th>
+                                <th style="padding:0.65rem 0.85rem; text-align:center;">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding:0.65rem 0.85rem;"><strong>AST0001</strong></td>
+                                <td style="padding:0.65rem 0.85rem;">Dell OptiPlex 7090 Micro</td>
+                                <td style="padding:0.65rem 0.85rem; color:#dc2626;">15 Sep 2026</td>
+                                <td style="padding:0.65rem 0.85rem;"><span style="background:#fee2e2; color:#dc2626; padding:2px 7px; border-radius:12px; font-weight:700; font-size:0.74rem;">Expired</span></td>
+                                <td style="padding:0.65rem 0.85rem; text-align:center;">
+                                    <a href="/maintenance" style="background:#f3f4f6; color:#374151; border:1px solid #d1d5db; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:600; text-decoration:none;">Log AMC</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+                <button type="button" class="btn-secondary" onclick="window.print()">🖨️ Print Report</button>
+                <div style="display:flex; gap:0.5rem;">
+                    <button type="button" class="btn-secondary" onclick="closeWarrantyModal()">Close</button>
+                    <a href="/reports" class="btn-primary" style="background:#18181b; color:#fff; text-decoration:none; padding:0.55rem 1rem; border-radius:6px; font-size:0.84rem; font-weight:600;">View Full Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Script -->
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const dashboardAssetsData = /*[[${allAssets}]]*/ [];
+        const dashboardEmployeesData = /*[[${allEmployees}]]*/ [];
+        /*]]>*/
+
+        // Init dark mode preference from localStorage
+        (function() {
+            const savedTheme = localStorage.getItem('assetos_theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        })();
+
+        function toggleSubmenu(id, el) {
+            const sm = document.getElementById(id);
+            if (sm) {
+                sm.style.display = (sm.style.display === 'none' || sm.style.display === '') ? 'flex' : 'none';
+            }
+        }
+
+        function toggleUserDropdown() {
+            const menu = document.getElementById('userDropdown');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+
+        function toggleNotifications(e) {
+            if (e) e.stopPropagation();
+            const notif = document.getElementById('notifDropdown');
+            if (notif) notif.classList.toggle('open');
+        }
+
+        function clearNotifications() {
+            const notifItems = document.querySelectorAll('.notif-card-item');
+            notifItems.forEach(item => item.classList.remove('unread'));
+            const badge = document.getElementById('notifBadge');
+            if (badge) badge.style.display = 'none';
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('assetos_theme', isDark ? 'dark' : 'light');
+            showFilterToast(isDark ? '🌙 Dark Mode Activated' : '☀️ Light Mode Activated');
+        }
+
+        function openWarrantyModal() {
+            const modal = document.getElementById('warrantyModal');
+            if (modal) modal.classList.add('open');
+        }
+
+        function closeWarrantyModal() {
+            const modal = document.getElementById('warrantyModal');
+            if (modal) modal.classList.remove('open');
+        }
+
+        function switchActivityTab(type, btn) {
+            // Update active pill
+            const btns = document.querySelectorAll('.activity-tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            // Filter timeline items
+            const items = document.querySelectorAll('#timelineActivityList .activity-feed-item');
+            items.forEach(item => {
+                const itemType = item.getAttribute('data-type');
+                if (type === 'ALL' || itemType === type) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function handleUniversalDashboardSearch(term) {
+            const q = (term || '').toLowerCase().trim();
+            const dropdown = document.getElementById('globalSearchResultsDropdown');
+            const resultsList = document.getElementById('globalSearchResultsList');
+            const countText = document.getElementById('searchResultCountText');
+            const viewAllLink = document.getElementById('searchViewAllAssetsLink');
+
+            if (viewAllLink) {
+                viewAllLink.href = q ? `/assets?search=${encodeURIComponent(q)}` : '/assets';
+            }
+
+            if (!q) {
+                if (dropdown) dropdown.style.display = 'none';
+                // Reset tables
+                document.querySelectorAll('#recentAssetsTableBody tr').forEach(r => r.style.display = '');
+                document.querySelectorAll('#recentAssignmentsTableBody tr').forEach(r => r.style.display = '');
+                document.querySelectorAll('#recentReturnsTableBody tr').forEach(r => r.style.display = '');
+                document.querySelectorAll('#timelineActivityList .activity-feed-item').forEach(r => r.style.display = 'flex');
+                return;
+            }
+
+            // 1. Filter in-memory Assets
+            const matchingAssets = (dashboardAssetsData || []).filter(a => {
+                const name = (a.name || '').toLowerCase();
+                const tag = (a.assetTag || '').toLowerCase();
+                const cat = (a.category || '').toLowerCase();
+                const brand = (a.brand || '').toLowerCase();
+                const dept = (a.department || '').toLowerCase();
+                const status = (a.status || '').toLowerCase();
+                return name.includes(q) || tag.includes(q) || cat.includes(q) || brand.includes(q) || dept.includes(q) || status.includes(q);
+            });
+
+            // 2. Filter in-memory Employees
+            const matchingEmployees = (dashboardEmployeesData || []).filter(e => {
+                const name = (e.fullName || '').toLowerCase();
+                const id = (e.employeeId || '').toLowerCase();
+                const dept = (e.department || '').toLowerCase();
+                const desig = (e.designation || '').toLowerCase();
+                return name.includes(q) || id.includes(q) || dept.includes(q) || desig.includes(q);
+            });
+
+            // 3. Render Dropdown Content (Image 4)
+            if (dropdown && resultsList) {
+                dropdown.style.display = 'block';
+                const totalMatches = matchingAssets.length + matchingEmployees.length;
+                if (countText) countText.textContent = `Found ${totalMatches} match(es) for "${term}"`;
+
+                let html = '';
+
+                if (totalMatches === 0) {
+                    html = `<div style="padding: 1.5rem; text-align: center; color: #9ca3af; font-size: 0.82rem;">
+                                No assets or employees found matching <strong>"${escapeHtml(term)}"</strong>
+                            </div>`;
+                } else {
+                    if (matchingAssets.length > 0) {
+                        html += `<div class="search-res-section-title">📦 Assets (${matchingAssets.length})</div>`;
+                        matchingAssets.slice(0, 5).forEach(a => {
+                            const badgeBg = a.status === 'Available' ? '#ecfdf5' : (a.status === 'Assigned' ? '#eff6ff' : '#fef3c7');
+                            const badgeColor = a.status === 'Available' ? '#047857' : (a.status === 'Assigned' ? '#1d4ed8' : '#b45309');
+                            html += `
+                                <a href="/assets?search=${encodeURIComponent(a.assetTag || '')}" class="search-result-item">
+                                    <div class="search-res-left">
+                                        <div class="search-res-icon">💻</div>
+                                        <div>
+                                            <div class="search-res-title">${escapeHtml(a.name)}</div>
+                                            <div class="search-res-sub">Tag: <strong>${escapeHtml(a.assetTag)}</strong> &bull; ${escapeHtml(a.category || '')} &bull; ${escapeHtml(a.department || 'General')}</div>
+                                        </div>
+                                    </div>
+                                    <span class="search-res-badge" style="background:${badgeBg}; color:${badgeColor};">${escapeHtml(a.status || 'Active')}</span>
+                                </a>
+                            `;
+                        });
+                    }
+
+                    if (matchingEmployees.length > 0) {
+                        html += `<div class="search-res-section-title" style="margin-top:0.4rem;">👤 Employees (${matchingEmployees.length})</div>`;
+                        matchingEmployees.slice(0, 4).forEach(e => {
+                            html += `
+                                <a href="/employees?search=${encodeURIComponent(e.employeeId || '')}" class="search-result-item">
+                                    <div class="search-res-left">
+                                        <div class="search-res-icon" style="background:#eff6ff; border-color:#bfdbfe;">👤</div>
+                                        <div>
+                                            <div class="search-res-title">${escapeHtml(e.fullName)}</div>
+                                            <div class="search-res-sub">${escapeHtml(e.employeeId)} &bull; ${escapeHtml(e.department || '')} &bull; ${escapeHtml(e.designation || '')}</div>
+                                        </div>
+                                    </div>
+                                    <span class="search-res-badge" style="background:#f3f4f6; color:#374151;">${escapeHtml(e.status || 'Active')}</span>
+                                </a>
+                            `;
+                        });
+                    }
+                }
+
+                resultsList.innerHTML = html;
+            }
+
+            // 4. Also filter in-page dashboard tables
+            document.querySelectorAll('#recentAssetsTableBody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+            document.querySelectorAll('#recentAssignmentsTableBody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+            document.querySelectorAll('#recentReturnsTableBody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+            document.querySelectorAll('#timelineActivityList .activity-feed-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+            });
+        }
+
+        function handleSearchKeyDown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                scrollToDashboardTables();
+            } else if (e.key === 'Escape') {
+                const dropdown = document.getElementById('globalSearchResultsDropdown');
+                if (dropdown) dropdown.style.display = 'none';
+            }
+        }
+
+        function scrollToDashboardTables() {
+            const dropdown = document.getElementById('globalSearchResultsDropdown');
+            if (dropdown) dropdown.style.display = 'none';
+            const tableSec = document.getElementById('recentAssetsTableBody');
+            if (tableSec) {
+                tableSec.closest('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function(m) {
+                switch(m) {
+                    case '&': return '&amp;';
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '"': return '&quot;';
+                    case "'": return '&#39;';
+                    default: return m;
+                }
+            });
+        }
+
+        function applyDashboardTimeFilter(period) {
+            const tableBody = document.getElementById('recentAssetsTableBody');
+            if (!tableBody) return;
+            const rows = tableBody.querySelectorAll('tr');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                let match = true;
+
+                if (period === 'today') {
+                    match = text.includes('today') || text.includes('2026');
+                } else if (period === 'week') {
+                    match = text.includes('2026') || text.includes('oct');
+                } else if (period === 'month') {
+                    match = text.includes('oct') || text.includes('nov') || text.includes('2026');
+                } else if (period === 'quarter' || period === 'year' || period === 'all') {
+                    match = true;
+                }
+
+                row.style.display = match ? '' : 'none';
+                if (match) visibleCount++;
+            });
+
+            showFilterToast(`Filter applied: ${period.toUpperCase()}`);
+        }
+
+        function showFilterToast(message) {
+            let toast = document.getElementById('filterToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'filterToast';
+                toast.className = 'filter-toast-banner';
+                document.body.appendChild(toast);
+            }
+            toast.textContent = message;
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2500);
+        }
+
+        // Close dropdowns if clicked outside
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-profile-menu')) {
+                const userMenu = document.getElementById('userDropdown');
+                if (userMenu) userMenu.classList.remove('show');
+            }
+            if (!e.target.closest('.notification-wrapper')) {
+                const notifMenu = document.getElementById('notifDropdown');
+                if (notifMenu) notifMenu.classList.remove('open');
+            }
+            if (!e.target.closest('.cream-search-box-wrapper') && !e.target.closest('#topSearchInput')) {
+                const searchDrop = document.getElementById('globalSearchResultsDropdown');
+                if (searchDrop) searchDrop.style.display = 'none';
+            }
+            const wModal = document.getElementById('warrantyModal');
+            if (wModal && e.target === wModal) {
+                closeWarrantyModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Directory — AssetOS Enterprise</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/pages.css}">
+    <style>
+        .custom-page-card {
+            background: #ffffff;
+            border: 1px solid #e7e5d8;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .btn-modern-primary {
+            background: #18181b;
+            color: #ffffff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.5rem 1.1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            transition: all 0.18s ease;
+        }
+        .btn-modern-primary:hover {
+            background: #27272a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+        }
+        .btn-action-edit {
+            background: #f59e0b;
+            color: #ffffff;
+            border: none;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(245, 158, 11, 0.2);
+        }
+        .btn-action-edit:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(245, 158, 11, 0.3);
+        }
+        .btn-action-delete {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(239, 68, 68, 0.2);
+        }
+        .btn-action-delete:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(239, 68, 68, 0.3);
+        }
+        .gst-badge {
+            background: #f4f4f5;
+            color: #3f3f46;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.75rem;
+            border: 1px solid #e4e4e7;
+        }
+        .black-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .black-table th {
+            background: #18181b;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.76rem;
+            letter-spacing: 0.03em;
+            padding: 0.85rem 1rem;
+            border: none;
+        }
+        .black-table td {
+            padding: 0.95rem 1rem;
+            border-bottom: 1px solid #f1f0e8;
+            color: #27272a;
+            vertical-align: middle;
+        }
+        .black-table tr:hover td { background: #fdfcf9; }
+        .table-footer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1.25rem;
+            font-size: 0.82rem;
+            color: #6b7280;
+        }
+        .form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+        @media(max-width:640px){ .form-row-2{grid-template-columns:1fr;} }
+    </style>
+</head>
+<body>
+<div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+<aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="brand">
+            <div class="brand-icon-box">A</div>
+            <div class="brand-text">
+                <h1>AssetOS</h1>
+                <span>Enterprise Asset Suite</span>
+            </div>
+        </a>
+        <button id="sidebarCloseBtn" class="sidebar-close-btn">&times;</button>
+    </div>
+    <nav class="sidebar-nav">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                        <span>Dashboard</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="javascript:void(0)" class="nav-link" onclick="toggleSubmenu('assetSubmenu', this)">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        <span>Asset</span>
+                    </div>
+                    <svg class="submenu-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </a>
+                <ul id="assetSubmenu" class="submenu-list">
+                    <li><a href="/assets" class="submenu-link">Asset Entry</a></li>
+                    <li><a href="/assignments" class="submenu-link">Asset Assignment</a></li>
+                    <li><a href="/asset-return" class="submenu-link">Asset Return</a></li>
+                    <li><a href="/asset-transfer" class="submenu-link">Asset Transfer</a></li>
+                    <li><a href="/maintenance" class="submenu-link">Asset Maintenance</a></li>
+                    <li><a href="/asset-disposal" class="submenu-link">Asset Disposal</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="/employees" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Employee</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/vendors" class="nav-link active">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                        <span>Vendor</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/expenses" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                        <span>Expense</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/reports" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        <span>Reports</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/settings" class="nav-link">
+                    <div class="nav-link-content">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span>Settings</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        AssetOS v1.0 &bull; 2026<br>
+        <span style="color:#a8a29e;">Firebase Live Cloud DB</span>
+    </div>
+</aside>
+
+<div class="main-wrapper">
+    <!-- Top Header with Universal Cream Search -->
+    <header class="top-header">
+        <div class="header-left">
+            <button id="menuToggleBtn" class="menu-toggle-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+            <div class="cream-search-box" style="min-width: 280px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" placeholder="Search vendors, contacts, GST..." oninput="filterVendorTable(this.value)">
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="status-badge-chip">
+                <span class="status-indicator-dot"></span>
+                <span>Firebase Connected</span>
+            </div>
+            <span class="current-date-display" th:text="${currentDate}">Today</span>
+            <div class="user-profile-menu">
+                <button class="user-avatar-btn" onclick="document.getElementById('userDropdown').classList.toggle('open')">
+                    <span th:text="${currentUser != null ? currentUser.avatarInitials : 'AD'}">AD</span>
+                </button>
+                <div id="userDropdown" class="user-dropdown-menu">
+                    <a href="/settings" class="user-dropdown-item">Settings</a>
+                    <a href="/logout" class="user-dropdown-item logout">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="content-body">
+        <div style="margin-bottom: 0.5rem;">
+            <h1 style="font-size:1.45rem; font-weight:700; color:#18181b; margin-bottom:2px;">Vendor Directory</h1>
+            <p style="font-size:0.83rem; color:#71717a;">Authorized suppliers, service partners, and hardware procurement distributors</p>
+        </div>
+
+        <div class="custom-page-card">
+            <!-- Modern Action Toolbar -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem;">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <button class="btn-modern-primary" onclick="openNewVendorModal()">
+                        <span>+</span> New Vendor
+                    </button>
+                    <div class="cream-search-box">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" placeholder="Quick filter vendors..." oninput="filterVendorTable(this.value)">
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <button type="button" class="btn-export-pill" onclick="window.print()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <span>PDF</span>
+                    </button>
+                    <button type="button" class="btn-export-pill" onclick="exportTableToExcel('vendorTable', 'Vendor_Directory')">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="17"></line><line x1="16" y1="13" x2="8" y2="17"></line></svg>
+                        <span>Excel</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table with Solid Black Header and Attractive Action Buttons -->
+            <div style="overflow-x:auto;">
+                <table class="black-table" id="vendorTable">
+                    <thead>
+                        <tr>
+                            <th>CODE</th>
+                            <th>VENDOR NAME</th>
+                            <th>CONTACT PERSON</th>
+                            <th>MOBILE</th>
+                            <th>EMAIL</th>
+                            <th>GST NUMBER</th>
+                            <th>ADDRESS</th>
+                            <th style="text-align:center;">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vendorTableBody">
+                        <tr th:each="v : ${vendors}">
+                            <td><strong th:text="${v.vendorCode}">VND001</strong></td>
+                            <td>
+                                <strong th:text="${v.vendorName}">Dell Technologies India</strong><br>
+                                <span style="font-size:0.75rem; color:#71717a;" th:text="${v.remarks}">Primary IT hardware vendor</span>
+                            </td>
+                            <td th:text="${v.contactPerson}">Rajesh Khanna</td>
+                            <td th:text="${v.mobile}">+91 98111 22334</td>
+                            <td th:text="${v.email}">sales@dell.co.in</td>
+                            <td><span class="gst-badge" th:text="${v.gstNumber}">29AAAAA0000A1Z5</span></td>
+                            <td th:text="${v.address}">Electronic City, Bangalore</td>
+                            <td style="text-align:center;">
+                                <div style="display:inline-flex; gap:0.4rem;">
+                                    <button type="button" class="btn-action-edit"
+                                            th:attr="data-code=${v.vendorCode}, data-name=${v.vendorName}, data-person=${v.contactPerson}, data-mobile=${v.mobile}, data-email=${v.email}, data-gst=${v.gstNumber}, data-address=${v.address}, data-rem=${v.remarks}"
+                                            onclick="openEditVendorModal(this)">
+                                        <span>✏️</span> Edit
+                                    </button>
+                                    <form method="post" action="/vendors/delete" onsubmit="return confirm('Delete this vendor?');" style="display:inline;">
+                                        <input type="hidden" name="vendorCode" th:value="${v.vendorCode}">
+                                        <button type="submit" class="btn-action-delete">
+                                            <span>🗑️</span> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${vendors.isEmpty()}">
+                            <td colspan="8" style="text-align:center; color:#9ca3af; padding:2rem;">No vendor records found. Click "+ New Vendor" to add one.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer-row">
+                <span th:text="'Showing ' + ${vendors.size()} + ' vendor records'">Showing 4 vendor records</span>
+                <span>AssetOS v1.0 &bull; Enterprise Procurement</span>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal Dialog for New / Edit Vendor -->
+<div id="vendorModal" class="modal-overlay" role="dialog" aria-modal="true" onclick="if(event.target===this)closeVendorModal()">
+    <div class="modal-dialog" style="max-width: 620px;">
+        <div class="modal-header">
+            <h3 id="vendorModalTitle" class="modal-title">New Vendor</h3>
+            <button class="modal-close-btn" type="button" onclick="closeVendorModal()">&times;</button>
+        </div>
+        <form method="post" action="/vendors/save">
+            <div class="modal-body">
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Vendor Code</label>
+                        <input type="text" name="vendorCode" id="vCode" class="form-input" placeholder="(Auto generated)" readonly style="background:#f4f4f5;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vendor Name *</label>
+                        <input type="text" name="vendorName" id="vName" class="form-input" placeholder="e.g. Dell Technologies India" required>
+                    </div>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Contact Person *</label>
+                        <input type="text" name="contactPerson" id="vPerson" class="form-input" placeholder="e.g. Rajesh Khanna" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mobile Number *</label>
+                        <input type="text" name="mobile" id="vMobile" class="form-input" placeholder="e.g. +91 98111 22334" required>
+                    </div>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" name="email" id="vEmail" class="form-input" placeholder="e.g. sales@vendor.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">GST / Tax ID</label>
+                        <input type="text" name="gstNumber" id="vGst" class="form-input" placeholder="e.g. 29AAAAA0000A1Z5">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Office Address</label>
+                    <input type="text" name="address" id="vAddress" class="form-input" placeholder="e.g. Electronic City, Bangalore">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Remarks / Procurement Category</label>
+                    <textarea name="remarks" id="vRem" class="form-input" rows="2" placeholder="e.g. Primary authorized hardware partner"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeVendorModal()">Cancel</button>
+                <button type="submit" class="btn-primary" style="background:#18181b; color:#fff;">Save Vendor</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/js/dashboard.js}"></script>
+<script>
+    // Init dark mode from localStorage
+    (function() {
+        if (localStorage.getItem('assetos_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    })();
+
+    function toggleSubmenu(id, el) {
+        const sm = document.getElementById(id);
+        if (sm) sm.style.display = (sm.style.display === 'none' || sm.style.display === '') ? 'flex' : 'none';
+    }
+
+    function filterVendorTable(term) {
+        const q = (term || '').toLowerCase().trim();
+        const rows = document.querySelectorAll('#vendorTableBody tr');
+        rows.forEach(r => {
+            r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    }
+
+    function openNewVendorModal() {
+        document.getElementById('vendorModalTitle').textContent = 'New Vendor';
+        document.getElementById('vCode').value = '';
+        document.getElementById('vName').value = '';
+        document.getElementById('vPerson').value = '';
+        document.getElementById('vMobile').value = '';
+        document.getElementById('vEmail').value = '';
+        document.getElementById('vGst').value = '';
+        document.getElementById('vAddress').value = '';
+        document.getElementById('vRem').value = '';
+        document.getElementById('vendorModal').classList.add('open');
+    }
+
+    function openEditVendorModal(btn) {
+        document.getElementById('vendorModalTitle').textContent = 'Edit Vendor';
+        document.getElementById('vCode').value = btn.getAttribute('data-code');
+        document.getElementById('vName').value = btn.getAttribute('data-name');
+        document.getElementById('vPerson').value = btn.getAttribute('data-person');
+        document.getElementById('vMobile').value = btn.getAttribute('data-mobile');
+        document.getElementById('vEmail').value = btn.getAttribute('data-email');
+        document.getElementById('vGst').value = btn.getAttribute('data-gst');
+        document.getElementById('vAddress').value = btn.getAttribute('data-address');
+        document.getElementById('vRem').value = btn.getAttribute('data-rem');
+        document.getElementById('vendorModal').classList.add('open');
+    }
+
+    function closeVendorModal() {
+        document.getElementById('vendorModal').classList.remove('open');
+    }
+</script>
+</body>
+</html>

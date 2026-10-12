@@ -1,0 +1,273 @@
+/* ==========================================================================
+   AssetOS — pages.css
+   Supplemental styles for inner pages (Assets, Employees, Assignments,
+   Maintenance, Reports). Builds on dashboard.css variables.
+   ========================================================================== */
+
+/* Breadcrumb navigation */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--gray-400);
+    margin-bottom: 0.35rem;
+}
+
+.breadcrumb a {
+    color: var(--blue-600);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb span {
+    color: var(--gray-300);
+}
+
+/* Page-header right-side action group */
+.header-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Summary pills row (Assets page) */
+.summary-pills {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+}
+
+.pill {
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid var(--gray-200);
+    background-color: #fff;
+    color: var(--gray-600);
+}
+
+.pill strong {
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-left: 0.25rem;
+}
+
+.pill-total { background-color: var(--blue-50); border-color: var(--blue-100); color: var(--blue-700); }
+.pill-available { background-color: var(--emerald-50); border-color: var(--emerald-100); color: var(--emerald-600); }
+.pill-assigned { background-color: var(--purple-50); border-color: var(--purple-100); color: var(--purple-600); }
+.pill-maintenance { background-color: var(--amber-50); border-color: var(--amber-100); color: var(--amber-600); }
+
+/* Serial number monospace inline */
+.serial-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--gray-600);
+    background-color: var(--gray-100);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+}
+
+/* Condition badges */
+.badge-excellent {
+    background-color: var(--emerald-50);
+    color: var(--emerald-600);
+    border: 1px solid var(--emerald-100);
+}
+
+.badge-good {
+    background-color: var(--blue-50);
+    color: var(--blue-700);
+    border: 1px solid var(--blue-100);
+}
+
+.badge-fair {
+    background-color: var(--amber-50);
+    color: var(--amber-600);
+    border: 1px solid var(--amber-100);
+}
+
+.badge-poor {
+    background-color: #fff1f2;
+    color: #be123c;
+    border: 1px solid #fecdd3;
+}
+
+.badge-retired {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.badge-retired .badge-dot {
+    background-color: #ef4444;
+}
+
+/* Employee avatar in table */
+.employee-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.emp-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--blue-700);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+/* Asset count badge */
+.asset-count-badge {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    border-radius: 9999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+/* Issue description cell — truncate long text */
+.issue-desc {
+    display: block;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--gray-700);
+    font-size: 0.85rem;
+}
+
+/* Reports page grid */
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+/* Bar chart rows */
+.bar-container {
+    height: 8px;
+    background-color: var(--gray-100);
+    border-radius: 9999px;
+    overflow: hidden;
+    min-width: 80px;
+}
+
+.bar-fill {
+    height: 100%;
+    background-color: var(--blue-500);
+    border-radius: 9999px;
+    transition: width 0.4s ease;
+}
+
+.bar-fill-accent {
+    background-color: var(--emerald-500);
+}
+
+.bar-fill-purple {
+    background-color: var(--purple-600);
+}
+
+/* Responsive adjustments for inner pages */
+@media (max-width: 1100px) {
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-actions-group {
+        flex-wrap: wrap;
+    }
+
+    .issue-desc {
+        max-width: 140px;
+    }
+}
+
+/* Dark Mode Overrides for Internal Pages */
+body.dark-mode {
+    background-color: #0f0f11 !important;
+    color: #e4e4e7 !important;
+}
+
+body.dark-mode .card,
+body.dark-mode .custom-page-card,
+body.dark-mode .report-card {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #e4e4e7 !important;
+}
+
+body.dark-mode .bordered-table,
+body.dark-mode .black-table {
+    color: #e4e4e7 !important;
+}
+
+body.dark-mode .bordered-table th,
+body.dark-mode .black-table th {
+    background: #121214 !important;
+    color: #f4f4f5 !important;
+    border-color: #27272a !important;
+}
+
+body.dark-mode .bordered-table td,
+body.dark-mode .black-table td {
+    border-bottom: 1px solid #27272a !important;
+    color: #e4e4e7 !important;
+}
+
+body.dark-mode .bordered-table tr:hover td,
+body.dark-mode .black-table tr:hover td {
+    background: #222226 !important;
+}
+
+body.dark-mode .sub-tab-btn {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #e4e4e7 !important;
+}
+
+body.dark-mode .sub-tab-btn.active {
+    background: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .cream-search-box {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+}
+
+body.dark-mode .cream-search-box input {
+    background: transparent !important;
+    color: #f4f4f5 !important;
+}
+
+body.dark-mode .search-box input,
+body.dark-mode .filter-input {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #f4f4f5 !important;
+}
+
+body.dark-mode .page-headline,
+body.dark-mode .card-title {
+    color: #f4f4f5 !important;
+}
+
